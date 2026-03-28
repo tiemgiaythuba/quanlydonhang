@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script type="text/javascript" src="https://s.17track.net/en/js/html5/sncal.js"></script>
 
     <script>
         tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { 500: '#ea580c', 600: '#c2410c' }, slate: { 800: '#1e293b', 900: '#0f172a' } } } } }
@@ -55,14 +56,13 @@
                     <div id="sync-status-desktop" class="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
-            
             <div class="md:hidden flex justify-end p-4"><button onclick="toggleSidebar()" class="text-slate-400 text-2xl"><i class="fa-solid fa-xmark"></i></button></div>
             <nav class="flex-1 px-4 py-2 space-y-3">
                 <button onclick="switchTab('orders')" id="btn-orders" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-white bg-brand-600 font-medium shadow-lg transition"><i class="fa-solid fa-box w-6 text-center text-lg"></i><span>Đơn Hàng</span></button>
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 26.0 Perfect UI</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver Fix Popup & Scroll</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -100,10 +100,10 @@
                 </div>
             </div>
 
-            <div id="tab-reports" class="tab-content hidden flex-1 flex flex-col h-full overflow-auto p-4 md:p-8 pb-20">
+            <div id="tab-reports" class="tab-content hidden flex-1 overflow-y-auto p-4 md:p-8 pb-32">
                 <h2 class="font-bold text-xl md:text-2xl text-slate-800 mb-4 md:mb-6">Báo Cáo Doanh Thu</h2>
                 
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6 flex-shrink-0">
+                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
                     <div class="flex flex-col md:flex-row gap-4 items-end">
                         <div class="w-full md:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tháng</label><input type="month" id="filter-month" onchange="runReport()" class="w-full border border-gray-300 rounded-lg p-2 text-sm outline-none focus:border-brand-500"></div>
                         <div class="w-full md:w-auto flex-1"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Mã CTV</label><select id="filter-code" onchange="runReport()" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-white outline-none focus:border-brand-500"><option value="">-- Tất cả --</option></select></div>
@@ -114,37 +114,35 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6 flex-shrink-0 h-64 md:h-80">
+                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6 h-64 md:h-80">
                     <canvas id="revenueChart"></canvas>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 flex-shrink-0">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100"><p class="text-xs font-bold text-gray-400 uppercase">Thực thu (Đã Hoàn Tất)</p><p class="text-2xl font-bold text-brand-600 mt-1" id="report-rev">0 ₫</p><p class="text-xs text-gray-400 mt-1">*Đã trừ Hoa hồng & Phí ship</p></div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-purple-500"><p class="text-xs font-bold text-gray-400 uppercase">Tổng Hoa Hồng Phải Trả</p><p class="text-xl font-bold text-purple-600 mt-1" id="report-comm-total">0 ₫</p><div class="mt-2 text-sm border-t pt-2 text-red-500 font-bold flex justify-between"><span>Chưa trả:</span><span id="report-comm-debt">0 ₫</span></div></div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100"><p class="text-xs font-bold text-gray-400 uppercase">Tổng Phí Ship & Đơn hàng</p><div class="flex justify-between items-end mt-1"><p class="text-2xl font-bold text-red-500" id="report-ship">0 ₫</p><p class="text-sm font-bold text-slate-800"><span id="report-count">0</span> đơn</p></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100"><p class="text-xs font-bold text-gray-400 uppercase">Thực thu (Đã Hoàn Tất)</p><p class="text-2xl font-bold text-brand-600 mt-1" id="report-rev">0 ₫</p></div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-purple-500"><p class="text-xs font-bold text-gray-400 uppercase">Tổng Hoa Hồng (Mọi trạng thái)</p><p class="text-xl font-bold text-purple-600 mt-1" id="report-comm-total">0 ₫</p><div class="mt-2 text-sm border-t pt-2 text-red-500 font-bold flex justify-between"><span>Chưa trả:</span><span id="report-comm-debt">0 ₫</span></div></div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100"><p class="text-xs font-bold text-gray-400 uppercase">Tổng Phí Ship & Đơn</p><div class="flex justify-between items-end mt-1"><p class="text-2xl font-bold text-red-500" id="report-ship">0 ₫</p><p class="text-sm font-bold text-slate-800"><span id="report-count">0</span> đơn</p></div></div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-10">
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left min-w-[800px]">
-                            <thead class="bg-gray-50 text-xs font-bold text-gray-500 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-                                <tr>
-                                    <th class="p-3 bg-gray-50">Ngày</th>
-                                    <th class="p-3 bg-gray-50 w-48">Khách hàng</th>
-                                    <th class="p-3 text-right bg-gray-50">Giá bán</th>
-                                    <th class="p-3 text-right bg-gray-50">Hoa hồng</th>
-                                    <th class="p-3 text-center bg-purple-50">Đã TT?</th>
-                                    <th class="p-3 text-right bg-gray-50">Ship</th>
-                                    <th class="p-3 text-right text-brand-600 font-bold bg-gray-50">Thực thu</th>
-                                </tr>
-                            </thead>
-                            <tbody id="report-table" class="text-sm divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-10 overflow-x-auto w-full">
+                    <table class="w-full text-left min-w-[800px]">
+                        <thead class="bg-gray-50 text-xs font-bold text-gray-500 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+                            <tr>
+                                <th class="p-3 bg-gray-50">Ngày</th>
+                                <th class="p-3 bg-gray-50 w-48">Khách hàng</th>
+                                <th class="p-3 text-right bg-gray-50">Giá bán</th>
+                                <th class="p-3 text-right bg-gray-50">Hoa hồng</th>
+                                <th class="p-3 text-center bg-purple-50">Đã TT?</th>
+                                <th class="p-3 text-right bg-gray-50">Ship</th>
+                                <th class="p-3 text-right text-brand-600 font-bold bg-gray-50">Thực thu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table" class="text-sm divide-y divide-gray-100"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <div id="tab-settings" class="tab-content hidden p-4 md:p-8 h-full overflow-auto">
+            <div id="tab-settings" class="tab-content hidden flex-1 overflow-y-auto p-4 md:p-8 pb-32">
                 <div class="max-w-2xl bg-white p-6 rounded-xl shadow-sm border border-gray-200 mx-auto">
                     <h3 class="font-bold text-lg mb-6 text-slate-800">Kết nối Đám mây (Google Sheets)</h3>
                     <div class="mb-6"><label class="block text-sm font-bold text-slate-700 mb-2">Web App URL</label><input type="text" id="api-url-input" class="w-full border border-gray-300 rounded-lg p-3 text-sm font-mono bg-slate-50 text-slate-600 outline-none focus:border-brand-500" placeholder="https://script.google.com/..."></div>
@@ -165,7 +163,7 @@
                     <input type="hidden" name="orderIndex" value="-1">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="space-y-3">
-                            <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT tự điền)</span></h4>
+                            <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT để tự điền)</span></h4>
                             <input type="tel" name="phone" required oninput="autoFillCRM(this.value)" placeholder="Số điện thoại *" class="w-full border border-brand-300 bg-orange-50 rounded-lg p-3 outline-none focus:border-brand-500 font-bold">
                             <input type="text" name="customerName" required placeholder="Tên khách *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500">
                             <textarea name="address" required rows="2" placeholder="Địa chỉ giao hàng *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500 resize-none"></textarea>
@@ -202,20 +200,29 @@
         </div>
     </div>
 
+    <div id="tracking-modal" class="fixed inset-0 bg-slate-900/90 hidden z-[70] flex items-center justify-center p-4 md:p-10">
+        <div class="bg-white w-full max-w-3xl rounded-xl overflow-hidden shadow-2xl flex flex-col h-full max-h-[85vh]">
+            <div class="px-4 py-3 border-b flex justify-between items-center bg-brand-600 text-white">
+                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Tra cứu hành trình</h3>
+                <button onclick="closeTracking()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto bg-gray-50 p-2" id="YQContainer">
+                </div>
+        </div>
+    </div>
+
     <script>
-        // CONFIG
-        // DÁN LINK GOOGLE SCRIPT VÀO ĐÂY:
+        // BẠN DÁN LINK GOOGLE SCRIPT VÀO ĐÂY
         const DEFAULT_API_URL = ""; 
         
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
-        let orders = JSON.parse(localStorage.getItem('tg_orders_v26')) || [];
-        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v26')) || {};
-        let configRate = localStorage.getItem('tg_rate_v26') || 10;
+        let orders = JSON.parse(localStorage.getItem('tg_orders_v27')) || [];
+        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v27')) || {};
+        let configRate = localStorage.getItem('tg_rate_v27') || 10;
         document.getElementById('config-rate').value = configRate;
 
-        // UI HELPERS
         function showStatus(msg, type='loading') {
             const m = document.getElementById('sync-status-mobile');
             const d = document.getElementById('sync-status-desktop');
@@ -265,9 +272,31 @@
             }
         }
 
-        function trackOrder(code) { if(!code) return; window.open(`https://t.17track.net/vi#nums=${code}`, '_blank'); }
+        // CHỨC NĂNG TRA CỨU POPUP 17TRACK
+        function trackOrder(code) { 
+            if(!code) return; 
+            document.getElementById('tracking-modal').classList.remove('hidden');
+            document.getElementById('YQContainer').innerHTML = '<div class="text-center mt-10"><i class="fa-solid fa-spinner fa-spin text-brand-500 text-3xl"></i><p class="mt-2 text-gray-500">Đang tải dữ liệu tra cứu...</p></div>';
+            
+            // Gọi Widget 17track đổ vào Container
+            try {
+                YQV5.trackSingle({
+                    YQ_ContainerId: "YQContainer",
+                    YQ_Height: window.innerHeight * 0.7,
+                    YQ_Fc: "0",
+                    YQ_Lang: "vi",
+                    YQ_Num: code
+                });
+            } catch(e) {
+                document.getElementById('YQContainer').innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi không thể tải dữ liệu tra cứu.</p>';
+            }
+        }
+        function closeTracking() {
+            document.getElementById('tracking-modal').classList.add('hidden');
+            document.getElementById('YQContainer').innerHTML = ''; // Dọn dẹp iframe
+        }
 
-        // MÃ VẠCH (CAMERA)
+        // QUÉT MÃ VẠCH (CAMERA)
         let html5QrcodeScanner = null;
         let currentScanIdx = -1;
 
@@ -280,14 +309,14 @@
 
         function stopScan() {
             document.getElementById('scanner-modal').classList.add('hidden');
-            if (html5QrcodeScanner) { html5QrcodeScanner.clear().catch(e => console.error(e)); }
+            if (html5QrcodeScanner) { html5QrcodeScanner.clear().catch(e => console.error(e)); html5QrcodeScanner = null;}
         }
 
         function onScanSuccess(decodedText, decodedResult) {
             stopScan(); showStatus('Quét thành công!', 'success');
             updateField(currentScanIdx, 'trackingCode', decodedText);
         }
-        function onScanFailure(error) { /* Bỏ qua */ }
+        function onScanFailure(error) {}
 
         // BIỂU ĐỒ DOANH THU CHART.JS
         let revChart = null;
@@ -302,10 +331,7 @@
                 let final = o.price - disc;
                 let ship = Number(o.shippingFee) || 0;
                 let cm = o.refCode ? (o.price * configRate / 100) : 0;
-                
-                // Nếu hoàn tất -> Tính thực thu. Nếu Hoàn/Hủy -> Trừ đi tiền ship
                 let net = o.status === 'done' ? (final - cm - ship) : -ship;
-                
                 dateMap[dateStr] = (dateMap[dateStr] || 0) + net;
             });
             
@@ -326,7 +352,6 @@
             });
         }
 
-
         // CLOUD LOGIC
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
         async function syncData() {
@@ -336,19 +361,18 @@
                 const res = await fetch(API_URL, { signal: c.signal });
                 const data = await res.json();
                 orders = Array.isArray(data) ? data : [];
-                localStorage.setItem('tg_orders_v26', JSON.stringify(orders));
+                localStorage.setItem('tg_orders_v27', JSON.stringify(orders));
                 renderOrders(); showStatus("Đã cập nhật", "success");
             } catch (err) { console.warn(err); showStatus("Lỗi kết nối", "error"); }
         }
         async function saveToCloud() {
-            localStorage.setItem('tg_orders_v26', JSON.stringify(orders));
+            localStorage.setItem('tg_orders_v27', JSON.stringify(orders));
             if(!API_URL) return; showStatus("Lưu Cloud...", "loading");
             try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(orders) }); showStatus("Đã lưu", "success"); } catch (err) { showStatus("Lỗi mạng", "error"); }
         }
 
         async function updateShip(idx, val) { orders[idx].shippingFee = Number(val); await saveToCloud(); }
 
-        // RENDER ORDERS
         function renderOrders() {
             const d = document.getElementById('order-list-desktop');
             const m = document.getElementById('order-list-mobile');
@@ -368,7 +392,6 @@
                 let isDone = o.status === 'done';
                 let isReturned = o.status === 'returned';
                 
-                // Set color
                 let stColor = o.status==='shipping' ? 'text-yellow-600 bg-yellow-50' : 
                               (isDone ? 'text-green-600 bg-green-50' : 
                               (isReturned ? 'text-red-600 bg-red-50' : 'text-gray-600 bg-gray-100'));
@@ -451,26 +474,15 @@
                 
                 let isDone = o.status === 'done';
                 let isReturned = o.status === 'returned';
-
-                // Chỉ tính hoa hồng nếu đơn hoàn tất
+                
                 let actualCm = isDone ? cm : 0;
-                
-                // Tính Thực thu
-                let net = 0;
-                if (isDone) net = final - actualCm - ship;
-                else if (isReturned) net = -ship; // Lỗ tiền ship
-                
-                // Cộng vào tổng
+                let net = isDone ? (final - actualCm - ship) : (isReturned ? -ship : 0);
+
                 rev += net; 
                 commTotal += actualCm; 
-                
-                // Tiền ship vẫn tính cho các đơn đã xong hoặc hoàn
                 if (isDone || isReturned) totalShip += ship;
-
-                // Nợ hoa hồng
                 if(!o.isCommPaid && actualCm > 0) commDebt += actualCm; 
 
-                // Giao diện
                 let commCheck = actualCm > 0 ? `<input type="checkbox" class="comm-check w-4 h-4 accent-purple-600" ${o.isCommPaid?'checked':''} onchange="toggleComm(${realIdx}, this.checked)">` : '-';
                 let copyBtn = actualCm > 0 ? `<button onclick="copyTransferInfo('${o.customerName}', '${o.trackingCode}')" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-200 hover:bg-blue-100 flex items-center gap-1 mx-auto mt-1 cursor-pointer transition"><i class="fa-solid fa-copy"></i> Copy ND</button>` : '';
 
@@ -538,7 +550,7 @@
         async function handleFormSubmit(e) { 
             e.preventDefault(); const f = e.target; const idx = parseInt(f.orderIndex.value); 
             const pName = f.product.value.trim(); const pPrice = Number(f.price.value); 
-            if(pName && pPrice) { prodDb[pName] = pPrice; localStorage.setItem('tg_prods_v26', JSON.stringify(prodDb)); } 
+            if(pName && pPrice) { prodDb[pName] = pPrice; localStorage.setItem('tg_prods_v27', JSON.stringify(prodDb)); } 
             
             const data = { 
                 customerName: f.customerName.value, phone: f.phone.value, address: f.address.value, 
@@ -569,8 +581,8 @@
         function updateProdList() { const dl = document.getElementById('prod-list'); dl.innerHTML = ''; Object.keys(prodDb).forEach(k => dl.innerHTML += `<option value="${k}">`); }
         function autoFillPrice() { const f = document.getElementById('form-order'); const val = f.product.value; if(prodDb[val]) { f.price.value = prodDb[val]; calcPreview(); }}
         function calcPreview() { const f = document.getElementById('form-order'); const p = Number(f.price.value)||0; const d = f.discType.value==='percent' ? p*(Number(f.discVal.value)/100) : Number(f.discVal.value); document.getElementById('preview-total').innerText = Math.max(0, p-d).toLocaleString('vi-VN') + ' ₫'; }
-        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v26', configRate); alert('Đã lưu cấu hình!'); }
-        function clearCache() { localStorage.removeItem('tg_prods_v26'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
+        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v27', configRate); alert('Đã lưu cấu hình!'); }
+        function clearCache() { localStorage.removeItem('tg_prods_v27'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
 
         // Start
         renderOrders();
