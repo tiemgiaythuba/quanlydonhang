@@ -30,13 +30,10 @@
         .fab-btn { position: fixed; bottom: 80px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: #ea580c; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.4); z-index: 40; transition: transform 0.2s; }
         .fab-btn:active { transform: scale(0.9); }
         .comm-check { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
-        
-        #sync-status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(30, 41, 59, 0.95); color: white; padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: max-content; transition: all 0.3s; }
     </style>
 </head>
 <body class="text-slate-800 h-screen overflow-hidden">
 
-    <div id="sync-status" class="hidden"><i class="fa-solid fa-circle-check text-green-400"></i><span id="sync-text">Sẵn sàng</span></div>
     <button onclick="openCreateModal()" class="fab-btn md:hidden"><i class="fa-solid fa-plus"></i></button>
 
     <div id="app-container" class="flex h-full flex-col md:flex-row">
@@ -65,7 +62,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 28.0 AntiCache</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 29.0 Clean & Track</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -125,7 +122,6 @@
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                         <p class="text-xs font-bold text-gray-400 uppercase">Thực thu (Đã Hoàn Tất)</p>
                         <p class="text-2xl font-bold text-brand-600 mt-1" id="report-rev">0 ₫</p>
-                        <p class="text-xs text-gray-400 mt-1">*Đã trừ Hoa hồng & Phí ship</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-purple-500">
                         <p class="text-xs font-bold text-gray-400 uppercase">Tổng Hoa Hồng Phải Trả</p>
@@ -177,7 +173,7 @@
                     <input type="hidden" name="orderIndex" value="-1">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="space-y-3">
-                            <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT tự điền)</span></h4>
+                            <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT để tự điền)</span></h4>
                             <input type="tel" name="phone" required oninput="autoFillCRM(this.value)" placeholder="Số điện thoại *" class="w-full border border-brand-300 bg-orange-50 rounded-lg p-3 outline-none focus:border-brand-500 font-bold">
                             <input type="text" name="customerName" required placeholder="Tên khách *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500">
                             <textarea name="address" required rows="2" placeholder="Địa chỉ giao hàng *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500 resize-none"></textarea>
@@ -220,24 +216,20 @@
                 <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Tra cứu hành trình</h3>
                 <button onclick="closeTracking()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
             </div>
-            <div class="flex-1 overflow-y-auto bg-gray-50 relative" id="YQContainer">
-                </div>
+            <div class="flex-1 overflow-y-auto bg-gray-50 relative" id="YQContainer"></div>
         </div>
     </div>
 
     <script>
-        // BẠN DÁN LINK GOOGLE SCRIPT VÀO GIỮA 2 DẤU NGOẶC KÉP NÀY:
         const DEFAULT_API_URL = ""; 
-        
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
-        let orders = JSON.parse(localStorage.getItem('tg_orders_v28')) || [];
-        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v28')) || {};
-        let configRate = localStorage.getItem('tg_rate_v28') || 10;
+        let orders = JSON.parse(localStorage.getItem('tg_orders_v29')) || [];
+        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v29')) || {};
+        let configRate = localStorage.getItem('tg_rate_v29') || 10;
         document.getElementById('config-rate').value = configRate;
 
-        // UI HELPERS
         function showStatus(msg, type='loading') {
             const m = document.getElementById('sync-status-mobile');
             const d = document.getElementById('sync-status-desktop');
@@ -287,14 +279,13 @@
             }
         }
 
-        // --- FIX LỖI POPUP TRACKING 17TRACK BỊ CHẶN BỞI TRÌNH DUYỆT ---
+        // CHỨC NĂNG TRA CỨU POPUP 17TRACK
         function trackOrder(code) { 
             if(!code) return; 
             document.getElementById('tracking-modal').classList.remove('hidden');
             const container = document.getElementById('YQContainer');
             container.innerHTML = '';
 
-            // Nếu Script bị trình chặn quảng cáo chặn, YQV5 sẽ undefined
             if (typeof YQV5 === 'undefined') {
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full p-6 text-center mt-10">
@@ -304,28 +295,17 @@
                         <a href="https://t.17track.net/vi#nums=${code}" target="_blank" onclick="closeTracking()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition">
                             Xem hành trình trên 17TRACK
                         </a>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
-            // Nếu không bị chặn, hiển thị Popup
             try {
-                YQV5.trackSingle({
-                    YQ_ContainerId: "YQContainer",
-                    YQ_Height: 600,
-                    YQ_Fc: "0",
-                    YQ_Lang: "vi",
-                    YQ_Num: code
-                });
+                YQV5.trackSingle({ YQ_ContainerId: "YQContainer", YQ_Height: 600, YQ_Fc: "0", YQ_Lang: "vi", YQ_Num: code });
             } catch(e) {
-                container.innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi không thể tải dữ liệu. Hãy tải lại trang web.</p>';
+                container.innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi tải dữ liệu. Hãy F5 tải lại trang web.</p>';
             }
         }
-        function closeTracking() {
-            document.getElementById('tracking-modal').classList.add('hidden');
-            document.getElementById('YQContainer').innerHTML = ''; 
-        }
+        function closeTracking() { document.getElementById('tracking-modal').classList.add('hidden'); document.getElementById('YQContainer').innerHTML = ''; }
 
         // QUÉT MÃ VẠCH (CAMERA)
         let html5QrcodeScanner = null;
@@ -338,15 +318,8 @@
             html5QrcodeScanner.render(onScanSuccess, onScanFailure);
         }
 
-        function stopScan() {
-            document.getElementById('scanner-modal').classList.add('hidden');
-            if (html5QrcodeScanner) { html5QrcodeScanner.clear().catch(e => console.error(e)); html5QrcodeScanner = null;}
-        }
-
-        function onScanSuccess(decodedText, decodedResult) {
-            stopScan(); showStatus('Quét thành công!', 'success');
-            updateField(currentScanIdx, 'trackingCode', decodedText);
-        }
+        function stopScan() { document.getElementById('scanner-modal').classList.add('hidden'); if (html5QrcodeScanner) { html5QrcodeScanner.clear().catch(e => console.error(e)); html5QrcodeScanner = null;} }
+        function onScanSuccess(decodedText, decodedResult) { stopScan(); showStatus('Quét thành công!', 'success'); updateField(currentScanIdx, 'trackingCode', decodedText); }
         function onScanFailure(error) { /* Bỏ qua */ }
 
         // BIỂU ĐỒ DOANH THU CHART.JS
@@ -366,23 +339,15 @@
                 dateMap[dateStr] = (dateMap[dateStr] || 0) + net;
             });
             
-            const labels = Object.keys(dateMap).sort((a, b) => {
-                const [da, ma] = a.split('/'); const [db, mb] = b.split('/');
-                return new Date(2000, ma-1, da) - new Date(2000, mb-1, db);
-            });
+            const labels = Object.keys(dateMap).sort((a, b) => { const [da, ma] = a.split('/'); const [db, mb] = b.split('/'); return new Date(2000, ma-1, da) - new Date(2000, mb-1, db); });
             const data = labels.map(l => dateMap[l]);
 
             if(revChart) revChart.destroy();
             revChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels.length ? labels : ['Chưa có DL'],
-                    datasets: [{ label: 'Thực thu (₫)', data: data.length ? data : [0], backgroundColor: '#ea580c', borderRadius: 4 }]
-                },
+                type: 'bar', data: { labels: labels.length ? labels : ['Chưa có DL'], datasets: [{ label: 'Thực thu (₫)', data: data.length ? data : [0], backgroundColor: '#ea580c', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
-
 
         // CLOUD LOGIC
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
@@ -393,12 +358,12 @@
                 const res = await fetch(API_URL, { signal: c.signal });
                 const data = await res.json();
                 orders = Array.isArray(data) ? data : [];
-                localStorage.setItem('tg_orders_v28', JSON.stringify(orders));
+                localStorage.setItem('tg_orders_v29', JSON.stringify(orders));
                 renderOrders(); showStatus("Đã cập nhật", "success");
             } catch (err) { console.warn(err); showStatus("Lỗi kết nối", "error"); }
         }
         async function saveToCloud() {
-            localStorage.setItem('tg_orders_v28', JSON.stringify(orders));
+            localStorage.setItem('tg_orders_v29', JSON.stringify(orders));
             if(!API_URL) return; showStatus("Lưu Cloud...", "loading");
             try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(orders) }); showStatus("Đã lưu", "success"); } catch (err) { showStatus("Lỗi mạng", "error"); }
         }
@@ -578,7 +543,7 @@
         async function handleFormSubmit(e) { 
             e.preventDefault(); const f = e.target; const idx = parseInt(f.orderIndex.value); 
             const pName = f.product.value.trim(); const pPrice = Number(f.price.value); 
-            if(pName && pPrice) { prodDb[pName] = pPrice; localStorage.setItem('tg_prods_v28', JSON.stringify(prodDb)); } 
+            if(pName && pPrice) { prodDb[pName] = pPrice; localStorage.setItem('tg_prods_v29', JSON.stringify(prodDb)); } 
             
             const data = { 
                 customerName: f.customerName.value, phone: f.phone.value, address: f.address.value, 
@@ -609,8 +574,8 @@
         function updateProdList() { const dl = document.getElementById('prod-list'); dl.innerHTML = ''; Object.keys(prodDb).forEach(k => dl.innerHTML += `<option value="${k}">`); }
         function autoFillPrice() { const f = document.getElementById('form-order'); const val = f.product.value; if(prodDb[val]) { f.price.value = prodDb[val]; calcPreview(); }}
         function calcPreview() { const f = document.getElementById('form-order'); const p = Number(f.price.value)||0; const d = f.discType.value==='percent' ? p*(Number(f.discVal.value)/100) : Number(f.discVal.value); document.getElementById('preview-total').innerText = Math.max(0, p-d).toLocaleString('vi-VN') + ' ₫'; }
-        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v28', configRate); alert('Đã lưu cấu hình!'); }
-        function clearCache() { localStorage.removeItem('tg_prods_v28'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
+        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v29', configRate); alert('Đã lưu cấu hình!'); }
+        function clearCache() { localStorage.removeItem('tg_prods_v29'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
 
         // Start
         renderOrders();
