@@ -242,13 +242,26 @@
         }
         function toggleSidebar() { const sb = document.getElementById('sidebar'); sb.classList.toggle('-translate-x-full'); }
         function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-'+id).classList.remove('hidden');
-            document.getElementById('sidebar').classList.add('-translate-x-full'); 
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('bg-brand-600', 'text-white'));
-            document.getElementById('btn-'+id).classList.add('bg-brand-600', 'text-white');
-            if(id==='reports') runReport();
-        }
+    // Ẩn tất cả các tab
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    // Hiện tab được chọn
+    document.getElementById('tab-'+id).classList.remove('hidden');
+    // Đóng menu trên điện thoại
+    document.getElementById('sidebar').classList.add('-translate-x-full'); 
+    
+    // 1. Đưa tất cả các nút về trạng thái mặc định (Chữ xám)
+    document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('bg-brand-600', 'text-white', 'font-medium', 'shadow-lg');
+        el.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+    });
+    
+    // 2. Bật trạng thái nổi bật (Màu cam, chữ trắng) cho nút đang được chọn
+    const activeBtn = document.getElementById('btn-'+id);
+    activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+    activeBtn.classList.add('bg-brand-600', 'text-white', 'font-medium', 'shadow-lg');
+    
+    if(id==='reports') runReport();
+}
 
         function removeVietnameseTones(str) {
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
