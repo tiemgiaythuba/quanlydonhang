@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tiệm Giấy Thứ Ba - Quản Lý (PRO)</title>
+    <title>tiệm giấy Thứ Ba - Quản Lý (PRO)</title>
     
     <link rel="icon" href="tachnen.jpg">
     <link rel="shortcut icon" href="tachnen.jpg">
@@ -41,7 +41,7 @@
             <div class="flex items-center">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/40'" class="h-8 w-8 rounded-full border border-brand-500 mr-2 bg-white object-cover">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-base leading-tight">Tiệm Giấy</h1>
+                    <h1 class="text-white font-bold text-base leading-tight">tiệm giấy Thứ Ba</h1>
                     <div id="sync-status-mobile" class="text-[10px] text-gray-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
             <div class="hidden md:flex h-20 items-center px-6 bg-slate-800 border-b border-slate-700">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/50'" class="h-10 w-10 rounded-full border-2 border-brand-500 mr-3 object-cover bg-white">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-sm leading-tight">Tiệm Giấy <span class="text-brand-500">Thứ Ba</span></h1>
+                    <h1 class="text-white font-bold text-sm leading-tight">tiệm giấy <span class="text-brand-500">Thứ Ba</span></h1>
                     <div id="sync-status-desktop" class="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
             </div>
 
             <div id="tab-reports" class="tab-content hidden flex-1 overflow-y-auto p-4 md:p-8 pb-32">
-                <h2 class="font-bold text-xl md:text-2xl text-slate-800 mb-4 md:mb-6">Báo Cáo Doanh Thu</h2>
+                <h2 class="font-bold text-xl md:text-2xl text-slate-800 mb-4 md:mb-6">Báo cáo doanh hu</h2>
                 
                 <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
                     <div class="flex flex-col md:flex-row gap-4 items-end">
@@ -567,7 +567,7 @@
         function printOrder(idx) { 
             const o = orders[idx]; let disc = o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal; let final = o.price - disc; 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>In Vận Đơn</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">TIỆM GIẤY<br>THỨ BA</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm! 🍂</div></div></div></body></html>`); 
+            w.document.write(`<html><head><title>In Vận Đơn</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm! 🍂</div></div></div></body></html>`); 
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
