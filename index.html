@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tiệm Giấy Thứ Ba - Quản Lý (PRO)</title>
+    <title>tiệm giấy Thứ Ba - Quản Lý (PRO)</title>
     
     <link rel="icon" href="tachnen.jpg">
     <link rel="shortcut icon" href="tachnen.jpg">
@@ -43,7 +43,7 @@
             <div class="flex items-center">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/40'" class="h-8 w-8 rounded-full border border-brand-500 mr-2 bg-white object-cover">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-base leading-tight">Tiệm Giấy</h1>
+                    <h1 class="text-white font-bold text-base leading-tight">tiệm giấy Thứ Ba</h1>
                     <div id="sync-status-mobile" class="text-[10px] text-gray-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
             <div class="hidden md:flex h-20 items-center px-6 bg-slate-800 border-b border-slate-700">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/50'" class="h-10 w-10 rounded-full border-2 border-brand-500 mr-3 object-cover bg-white">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-sm leading-tight">Tiệm Giấy <span class="text-brand-500">Thứ Ba</span></h1>
+                    <h1 class="text-white font-bold text-sm leading-tight">tiệm giấy <span class="text-brand-500">Thứ Ba</span></h1>
                     <div id="sync-status-desktop" class="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -281,7 +281,7 @@
             
             let trackInfo = o.trackingCode ? `Mã vận đơn của bạn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho bạn sớm nha.`;
 
-            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${o.customerName} ạ 🍂,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${o.product}] cho bạn rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n📦 Nhận được hàng, bạn giúp Tiệm quay lại chút video mở hộp nha, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ bạn kịp thời và chu đáo nhất ạ.\n\nCảm ơn bạn đã thương mến và ủng hộ Tiệm Giấy Thứ Ba! Chúc bạn một ngày thật an lành ✨`;
+            let msg = `Dạ tiệm giấy Thứ Ba chào ${o.customerName} ạ,\n\ntiệm đã gói ghém cẩn thận và gửi đơn [${o.product}] cho bạn rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n📦 Nhận được hàng, bạn giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ bạn kịp thời và chu đáo nhất ạ.\n\nCảm ơn bạn đã thương mến và ủng hộ tiệm giấy Thứ Ba! Chúc bạn một ngày thật an lành!`;
             
             navigator.clipboard.writeText(msg).then(() => {
                 showStatus('Đã copy tin nhắn Zalo/Mess', 'success');
@@ -494,7 +494,7 @@
         function printOrder(idx) { 
             const o = orders[idx]; let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal); 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>In Vận Đơn A5</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">TIỆM GIẤY<br>THỨ BA</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm! 🍂</div></div></div></body></html>`); 
+            w.document.write(`<html><head><title>In Vận Đơn A5</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></div></body></html>`); 
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
@@ -520,7 +520,7 @@
                 .note { font-size: 10px; text-align: center; margin-top: 8px; font-style: italic; }
             </style></head><body>
             <div class="ticket">
-                <div class="header"><h1>TIỆM GIẤY THỨ BA</h1></div>
+                <div class="header"><h1>tiệm giấy Thứ Ba</h1></div>
                 <div class="to-block">
                     <div class="to-title">NGƯỜI NHẬN (TO):</div>
                     <div class="name">${o.customerName}</div>
@@ -535,7 +535,7 @@
                     ${o.isCOD ? `<div style="font-weight:bold; font-size:14px;">THU HỘ (COD)</div><div class="cod-text">${final.toLocaleString('vi-VN')} đ</div>` : `<div class="cod-text" style="font-size:16px;">ĐÃ THANH TOÁN</div>`}
                     ${o.trackingCode ? `<div style="margin-top:8px; font-size:14px;">Mã VĐ: <b>${o.trackingCode}</b></div>` : ''}
                 </div>
-                <div class="note">Cảm ơn bạn đã thương mến Tiệm! 🍂</div>
+                <div class="note">Cảm ơn bạn đã ủng hộ Tiệm!</div>
             </div>
             </body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
