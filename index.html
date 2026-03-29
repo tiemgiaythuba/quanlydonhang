@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>tiệm giấy Thứ Ba - Quản Lý (PRO)</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
     <link rel="icon" href="tachnen.jpg">
     <link rel="shortcut icon" href="tachnen.jpg">
 
@@ -551,6 +553,16 @@
         // Start
         renderOrders();
         syncData();
+    </script>
+<script>
+        // Đăng ký Service Worker cho PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Đã đăng ký App thành công'))
+                    .catch(err => console.log('Đăng ký App thất bại', err));
+            });
+        }
     </script>
 </body>
 </html>
