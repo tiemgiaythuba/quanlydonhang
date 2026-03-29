@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>tiệm giấy Thứ Ba - Quản Lý (PRO)</title>
+    <title>Tiệm Giấy Thứ Ba - Quản Lý (PRO)</title>
     
     <link rel="icon" href="tachnen.jpg">
     <link rel="shortcut icon" href="tachnen.jpg">
@@ -31,7 +31,6 @@
         .fab-btn:active { transform: scale(0.9); }
         .comm-check { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
         .cod-check { width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb; }
-        /* Đã xóa hoàn toàn CSS của thẻ #sync-status cũ ở đây */
     </style>
 </head>
 <body class="text-slate-800 h-screen overflow-hidden">
@@ -43,7 +42,7 @@
             <div class="flex items-center">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/40'" class="h-8 w-8 rounded-full border border-brand-500 mr-2 bg-white object-cover">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-base leading-tight">tiệm giấy Thứ Ba</h1>
+                    <h1 class="text-white font-bold text-base leading-tight">Tiệm Giấy</h1>
                     <div id="sync-status-mobile" class="text-[10px] text-gray-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -54,7 +53,7 @@
             <div class="hidden md:flex h-20 items-center px-6 bg-slate-800 border-b border-slate-700">
                 <img src="tachnen.jpg" onerror="this.src='https://via.placeholder.com/50'" class="h-10 w-10 rounded-full border-2 border-brand-500 mr-3 object-cover bg-white">
                 <div class="flex flex-col">
-                    <h1 class="text-white font-bold text-sm leading-tight">tiệm giấy <span class="text-brand-500">Thứ Ba</span></h1>
+                    <h1 class="text-white font-bold text-sm leading-tight">Tiệm Giấy <span class="text-brand-500">Thứ Ba</span></h1>
                     <div id="sync-status-desktop" class="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check"></i> Sẵn sàng</div>
                 </div>
             </div>
@@ -64,7 +63,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 31.0 CRM & Thermal</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 31.1 Hotfix</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -156,8 +155,8 @@
 
             <div id="tab-settings" class="tab-content hidden flex-1 overflow-y-auto p-4 md:p-8 pb-32">
                 <div class="max-w-2xl bg-white p-6 rounded-xl shadow-sm border border-gray-200 mx-auto">
-                    <h3 class="font-bold text-lg mb-6 text-slate-800">Kết nối Đám mây</h3>
-                    <div class="mb-6"><label class="block text-sm font-bold text-slate-700 mb-2">Web App URL (Google Script)</label><input type="text" id="api-url-input" class="w-full border border-gray-300 rounded-lg p-3 text-sm font-mono bg-slate-50 text-slate-600 outline-none focus:border-brand-500" placeholder="https://script.google.com/..."></div>
+                    <h3 class="font-bold text-lg mb-6 text-slate-800">Kết nối Đám mây (Google Sheets)</h3>
+                    <div class="mb-6"><label class="block text-sm font-bold text-slate-700 mb-2">Web App URL</label><input type="text" id="api-url-input" class="w-full border border-gray-300 rounded-lg p-3 text-sm font-mono bg-slate-50 text-slate-600 outline-none focus:border-brand-500" placeholder="https://script.google.com/..."></div>
                     <button onclick="saveApiUrl()" class="w-full bg-brand-600 hover:bg-brand-700 text-white p-3 rounded-lg font-bold mb-8 shadow transition">Lưu Kết Nối</button>
                     <h3 class="font-bold text-lg mb-4 text-slate-800">Cấu hình chung</h3>
                     <div class="mb-6"><label class="block text-sm font-medium mb-2 text-gray-700">% Hoa hồng giới thiệu</label><input type="number" id="config-rate" class="w-full border border-gray-300 rounded-lg p-2 font-bold outline-none focus:border-brand-500" placeholder="10"></div>
@@ -223,13 +222,12 @@
     </div>
 
     <script>
-        // BẠN DÁN LINK GOOGLE SCRIPT VÀO ĐÂY
+        // CONFIG
         const DEFAULT_API_URL = ""; 
         
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
-        // Lưu giữ dữ liệu cũ
         let orders = JSON.parse(localStorage.getItem('tg_orders_v31'));
         if (!orders) {
             orders = JSON.parse(localStorage.getItem('tg_orders_v30')) || JSON.parse(localStorage.getItem('tg_orders_v29')) || [];
@@ -239,6 +237,7 @@
         let configRate = localStorage.getItem('tg_rate_v31') || localStorage.getItem('tg_rate_v30') || 10;
         document.getElementById('config-rate').value = configRate;
 
+        // UI HELPERS
         function showStatus(msg, type='loading') {
             const m = document.getElementById('sync-status-mobile');
             const d = document.getElementById('sync-status-desktop');
@@ -281,7 +280,7 @@
             
             let trackInfo = o.trackingCode ? `Mã vận đơn của bạn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho bạn sớm nha.`;
 
-            let msg = `Dạ tiệm giấy Thứ Ba chào ${o.customerName} ạ,\n\ntiệm đã gói ghém cẩn thận và gửi đơn [${o.product}] cho bạn rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n📦 Nhận được hàng, bạn giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ bạn kịp thời và chu đáo nhất ạ.\n\nCảm ơn bạn đã thương mến và ủng hộ tiệm giấy Thứ Ba! Chúc bạn một ngày thật an lành!`;
+            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${o.customerName} ạ 🍂,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${o.product}] cho bạn rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n📦 Nhận được hàng, bạn giúp Tiệm quay lại chút video mở hộp nha, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ bạn kịp thời và chu đáo nhất ạ.\n\nCảm ơn bạn đã thương mến và ủng hộ Tiệm Giấy Thứ Ba! Chúc bạn một ngày thật an lành ✨`;
             
             navigator.clipboard.writeText(msg).then(() => {
                 showStatus('Đã copy tin nhắn Zalo/Mess', 'success');
@@ -296,10 +295,10 @@
             const container = document.getElementById('YQContainer');
             container.innerHTML = '';
             if (typeof YQV5 === 'undefined') {
-                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center mt-10"><i class="fa-solid fa-shield-halved text-5xl text-gray-300 mb-4"></i><p class="text-red-500 font-bold mb-2 text-lg">Trình duyệt chặn Plugin tra cứu!</p><p class="text-sm text-gray-500 mb-6">Vui lòng tắt trình chặn quảng cáo, hoặc mở tab xem an toàn.</p><a href="https://t.17track.net/vi#nums=${code}" target="_blank" onclick="closeTracking()" class="bg-brand-600 text-white px-6 py-3 rounded-lg font-bold">Xem hành trình</a></div>`; return;
+                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center mt-10"><i class="fa-solid fa-shield-halved text-5xl text-gray-300 mb-4"></i><p class="text-red-500 font-bold mb-2 text-lg">Trình duyệt chặn Plugin tra cứu!</p><p class="text-sm text-gray-500 mb-6">Vui lòng tắt trình chặn quảng cáo, hoặc mở tab xem an toàn.</p><a href="https://t.17track.net/vi#nums=${code}" target="_blank" onclick="closeTracking()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold transition">Xem hành trình</a></div>`; return;
             }
             try { YQV5.trackSingle({ YQ_ContainerId: "YQContainer", YQ_Height: 600, YQ_Fc: "0", YQ_Lang: "vi", YQ_Num: code }); } 
-            catch(e) { container.innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi tải dữ liệu.</p>'; }
+            catch(e) { container.innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi tải dữ liệu. Hãy tải lại trang web.</p>'; }
         }
         function closeTracking() { document.getElementById('tracking-modal').classList.add('hidden'); document.getElementById('YQContainer').innerHTML = ''; }
 
@@ -312,7 +311,7 @@
         }
         function stopScan() { document.getElementById('scanner-modal').classList.add('hidden'); if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null;} }
 
-        // BIỂU ĐỒ DOANH THU
+        // BIỂU ĐỒ
         let revChart = null;
         function updateChart(filteredOrders) {
             const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -333,17 +332,21 @@
             });
         }
 
-        // CLOUD LOGIC
+        // CLOUD LOGIC - FIX LỖI ĐỌC STREAM 2 LẦN
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
         async function syncData() {
             if(!API_URL) return; showStatus("Đồng bộ...", "loading");
             try {
                 const c = new AbortController(); setTimeout(() => c.abort(), 10000);
                 const res = await fetch(API_URL, { signal: c.signal });
-                orders = Array.isArray(await res.json()) ? await res.json() : orders;
+                
+                // ĐÂY CHÍNH LÀ ĐOẠN FIX LỖI KẾT NỐI
+                const data = await res.json();
+                orders = Array.isArray(data) ? data : orders;
+                
                 localStorage.setItem('tg_orders_v31', JSON.stringify(orders));
                 renderOrders(); showStatus("Đã cập nhật", "success");
-            } catch (err) { showStatus("Lỗi kết nối", "error"); }
+            } catch (err) { showStatus("Lỗi kết nối", "error"); console.log(err); }
         }
         async function saveToCloud() {
             localStorage.setItem('tg_orders_v31', JSON.stringify(orders));
@@ -378,10 +381,10 @@
                 let codBadge = o.isCOD ? (o.isMoneyCollected ? '<span class="text-xs font-bold text-blue-600 px-1 bg-blue-50 rounded">COD (Đã thu)</span>' : '<span class="text-xs font-bold text-orange-500 px-1 bg-orange-50 rounded">Thu COD</span>') : '<span class="text-xs font-bold text-green-500 px-1 bg-green-50 rounded">Đã CK</span>';
 
                 let actionBtns = `
-                    <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn CSKH"><i class="fa-solid fa-comment-dots"></i></button>
-                    <button onclick="openEditModal(${idx})" class="text-slate-400 hover:text-blue-600 transition" title="Sửa đơn"><i class="fa-solid fa-pen"></i></button>
+                    <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn Zalo"><i class="fa-solid fa-comment-dots"></i></button>
+                    <button onclick="openEditModal(${idx})" class="text-slate-400 hover:text-blue-600 transition" title="Sửa"><i class="fa-solid fa-pen"></i></button>
                     <button onclick="printOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In A5"><i class="fa-solid fa-print"></i></button>
-                    <button onclick="printThermalOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Tem Nhiệt 80mm"><i class="fa-solid fa-receipt"></i></button>
+                    <button onclick="printThermalOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Tem Nhiệt (80mm)"><i class="fa-solid fa-receipt"></i></button>
                     <button onclick="deleteOrder(${idx})" class="text-slate-400 hover:text-red-500 transition" title="Xóa"><i class="fa-solid fa-trash"></i></button>
                 `;
 
@@ -395,13 +398,12 @@
                         <input type="number" value="${o.shippingFee||''}" placeholder="Phí Ship" class="w-full text-xs p-1 border border-red-100 bg-red-50 rounded text-center text-red-500 outline-none focus:border-red-500" onblur="updateShip(${idx}, this.value)">
                     </td>
                     <td class="p-4 text-center"><select class="text-xs py-1 px-2 rounded border font-bold outline-none ${stColor}" onchange="updateField(${idx}, 'status', this.value)"><option value="pending" ${o.status=='pending'?'selected':''}>Mới tạo</option><option value="shipping" ${o.status=='shipping'?'selected':''}>Đang giao</option><option value="done" ${o.status=='done'?'selected':''}>Hoàn tất</option><option value="returned" ${o.status=='returned'?'selected':''}>Hoàn/Hủy</option></select></td>
-                    <td class="p-4 text-center space-x-2 flex items-center justify-center gap-2 mt-4">${actionBtns}</td>
+                    <td class="p-4 text-center space-x-2 flex justify-center items-center gap-2 mt-4">${actionBtns}</td>
                 </tr>`;
                 
                 // Mobile
                 let trackBtnMobile = o.trackingCode ? `<button onclick="trackOrder('${o.trackingCode}')" class="bg-blue-50 text-blue-600 px-3 rounded-lg border border-blue-200 hover:bg-blue-100 transition"><i class="fa-solid fa-truck-fast"></i></button>` : '';
                 let scanBtnMobile = `<button onclick="startScan(${idx})" class="bg-slate-100 text-slate-600 px-3 rounded-lg border border-slate-200 hover:bg-slate-200 transition"><i class="fa-solid fa-qrcode"></i></button>`;
-                
                 let actionBtnsMobile = `
                     <button onclick="copyMessage(${idx})" class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
@@ -446,11 +448,10 @@
 
                 let commCheck = actualCm > 0 ? `<input type="checkbox" class="comm-check w-4 h-4 accent-purple-600" ${o.isCommPaid?'checked':''} onchange="toggleComm(${realIdx}, this.checked)">` : '-';
                 let codCheck = o.isCOD ? `<input type="checkbox" class="cod-check w-4 h-4 accent-blue-600" ${o.isMoneyCollected?'checked':''} onchange="toggleMoney(${realIdx}, this.checked)" title="Đã thu tiền từ shipper">` : '<span class="text-[10px] text-gray-400">Đã CK</span>';
-                let copyBtn = actualCm > 0 ? `<button onclick="copyTransferInfo('${o.customerName}', '${o.trackingCode}')" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-200 hover:bg-blue-100 flex items-center gap-1 mx-auto mt-1 cursor-pointer transition"><i class="fa-solid fa-copy"></i> Copy ND</button>` : '';
-
+                
                 let netDisplay = isDone ? `<span class="text-brand-600 font-bold">${net.toLocaleString()}</span>` : (isReturned ? `<span class="text-red-500 font-bold">${net.toLocaleString()}</span>` : `<span class="text-[10px] text-gray-400">Chờ Xong</span>`);
 
-                tb.innerHTML += `<tr class="${(!isDone && !isReturned) ? 'opacity-70' : ''}"><td class="p-3 text-gray-500 text-xs">${new Date(o.date).toLocaleDateString('vi-VN')}</td><td class="p-3 text-sm"><div class="font-bold">${o.customerName}</div><div class="text-xs text-gray-500">${o.trackingCode || ''}</div><div class="text-[10px] text-purple-600 font-bold mt-1">${o.refCode||''}</div></td><td class="p-3 text-right text-sm font-medium">${final.toLocaleString()}</td><td class="p-3 text-center bg-blue-50">${codCheck}</td><td class="p-3 text-right text-sm text-gray-700">${actualCm > 0 ? actualCm.toLocaleString() : '-'} ${copyBtn}</td><td class="p-3 text-center bg-purple-50">${commCheck}</td><td class="p-3 text-right text-sm text-red-400">${ship > 0 ? ship.toLocaleString() : '-'}</td><td class="p-3 text-right">${netDisplay}</td></tr>`; 
+                tb.innerHTML += `<tr class="${(!isDone && !isReturned) ? 'opacity-70' : ''}"><td class="p-3 text-gray-500 text-xs">${new Date(o.date).toLocaleDateString('vi-VN')}</td><td class="p-3 text-sm"><div class="font-bold">${o.customerName}</div><div class="text-xs text-gray-500">${o.trackingCode || ''}</div><div class="text-[10px] text-purple-600 font-bold mt-1">${o.refCode||''}</div></td><td class="p-3 text-right text-sm font-medium">${final.toLocaleString()}</td><td class="p-3 text-center bg-blue-50">${codCheck}</td><td class="p-3 text-right text-sm text-gray-700">${actualCm > 0 ? actualCm.toLocaleString() : '-'}</td><td class="p-3 text-center bg-purple-50">${commCheck}</td><td class="p-3 text-right text-sm text-red-400">${ship > 0 ? ship.toLocaleString() : '-'}</td><td class="p-3 text-right">${netDisplay}</td></tr>`; 
             }); 
             
             document.getElementById('report-rev').innerText = rev.toLocaleString() + ' ₫'; document.getElementById('report-comm-total').innerText = commTotal.toLocaleString() + ' ₫'; document.getElementById('report-comm-debt').innerText = commDebt.toLocaleString() + ' ₫'; document.getElementById('report-ship').innerText = totalShip.toLocaleString() + ' ₫'; document.getElementById('report-count').innerText = filtered.length; document.getElementById('report-cod-collected').innerText = codCollectedTotal.toLocaleString() + ' ₫'; document.getElementById('report-cod-pending').innerText = codPendingTotal.toLocaleString() + ' ₫'; 
@@ -494,7 +495,7 @@
         function printOrder(idx) { 
             const o = orders[idx]; let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal); 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>In Vận Đơn A5</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></div></body></html>`); 
+            w.document.write(`<html><head><title>In Vận Đơn A5</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">TIỆM GIẤY<br>THỨ BA</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:2px;">${o.product}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm! 🍂</div></div></div></body></html>`); 
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
@@ -520,7 +521,7 @@
                 .note { font-size: 10px; text-align: center; margin-top: 8px; font-style: italic; }
             </style></head><body>
             <div class="ticket">
-                <div class="header"><h1>tiệm giấy Thứ Ba</h1></div>
+                <div class="header"><h1>TIỆM GIẤY THỨ BA</h1></div>
                 <div class="to-block">
                     <div class="to-title">NGƯỜI NHẬN (TO):</div>
                     <div class="name">${o.customerName}</div>
@@ -535,7 +536,7 @@
                     ${o.isCOD ? `<div style="font-weight:bold; font-size:14px;">THU HỘ (COD)</div><div class="cod-text">${final.toLocaleString('vi-VN')} đ</div>` : `<div class="cod-text" style="font-size:16px;">ĐÃ THANH TOÁN</div>`}
                     ${o.trackingCode ? `<div style="margin-top:8px; font-size:14px;">Mã VĐ: <b>${o.trackingCode}</b></div>` : ''}
                 </div>
-                <div class="note">Cảm ơn bạn đã ủng hộ Tiệm!</div>
+                <div class="note">Cảm ơn bạn đã thương mến Tiệm! 🍂</div>
             </div>
             </body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
