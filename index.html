@@ -362,10 +362,26 @@
                 const c = new AbortController(); setTimeout(() => c.abort(), 10000);
                 const res = await fetch(API_URL, { signal: c.signal });
                 const data = await res.json();
-                orders = Array.isArray(data) ? data : orders;
+                
+                // VÁ LỖI TẠI ĐÂY: Chuẩn hóa dữ liệu cũ từ Google Sheets
+                if (Array.isArray(data)) {
+                    data.forEach(o => {
+                        if(!o.pronoun) o.pronoun = "Bạn"; // Thêm xưng hô mặc định
+                        if(!o.items) { 
+                            // Nếu đơn cũ không có mảng items, tự động bọc lại thành chuẩn mới
+                            o.items = [{name: o.product || 'Sản phẩm', qty: 1, price: o.price || o.totalPrice || 0}]; 
+                        }
+                    });
+                    orders = data;
+                }
+                
                 localStorage.setItem('tg_orders_v34', JSON.stringify(orders));
-                renderOrders(); showStatus("Đã cập nhật", "success");
-            } catch (err) { showStatus("Lỗi kết nối", "error"); console.log(err); }
+                renderOrders(); 
+                showStatus("Đã cập nhật", "success");
+            } catch (err) { 
+                showStatus("Lỗi kết nối", "error"); 
+                console.log(err); 
+            }
         }
         async function saveToCloud() {
             localStorage.setItem('tg_orders_v34', JSON.stringify(orders));
