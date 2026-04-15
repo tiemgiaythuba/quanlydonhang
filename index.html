@@ -33,8 +33,6 @@
         .fab-btn:active { transform: scale(0.9); }
         .comm-check { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
         .cod-check { width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb; }
-        
-        /* Hiệu ứng xóa dòng sản phẩm */
         .prod-row { transition: all 0.2s; }
     </style>
 </head>
@@ -68,7 +66,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 32.0 (Multi-Product)</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 32.1 (Full Print)</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -181,7 +179,6 @@
                         <div class="space-y-3">
                             <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT tự điền)</span></h4>
                             <input type="tel" name="phone" required oninput="autoFillCRM(this.value)" placeholder="Số điện thoại *" class="w-full border border-brand-300 bg-orange-50 rounded-lg p-3 outline-none focus:border-brand-500 font-bold">
-                            
                             <div class="flex gap-2">
                                 <select name="salutation" class="w-1/3 border border-gray-300 rounded-lg p-3 bg-white outline-none focus:border-brand-500">
                                     <option value="Bạn">Bạn</option>
@@ -190,9 +187,7 @@
                                 </select>
                                 <input type="text" name="customerName" required placeholder="Tên khách *" class="w-2/3 border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500">
                             </div>
-
                             <textarea name="address" required rows="2" placeholder="Địa chỉ giao hàng *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500 resize-none"></textarea>
-                            
                             <div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">
                                 <input type="text" name="refCode" placeholder="Mã CTV" class="w-full border border-gray-300 rounded-lg p-3 uppercase bg-purple-50 outline-none focus:border-brand-500">
                             </div>
@@ -207,9 +202,7 @@
                                 <h4 class="text-xs font-bold text-brand-600 uppercase">2. Sản phẩm</h4>
                                 <button type="button" onclick="addProductRow()" class="text-xs bg-brand-100 text-brand-700 px-2 py-1 rounded font-bold hover:bg-brand-200 transition"><i class="fa-solid fa-plus"></i> Thêm SP</button>
                             </div>
-                            
-                            <div id="product-rows-container" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                                </div>
+                            <div id="product-rows-container" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
                             <datalist id="prod-list"></datalist>
 
                             <div class="mt-4 space-y-3 pt-3 border-t border-gray-200">
@@ -217,7 +210,6 @@
                                     <label class="text-sm font-medium text-gray-600 w-1/3">Phí ship (Khách trả)</label>
                                     <input type="number" name="customerShipFee" value="0" oninput="calcPreview()" placeholder="0" class="w-2/3 border border-blue-200 bg-blue-50 rounded p-2 text-blue-700 font-bold outline-none text-right">
                                 </div>
-                                
                                 <div class="flex items-center justify-between gap-3 bg-white p-2 rounded-lg border border-gray-200">
                                     <label class="text-sm font-medium text-gray-600 w-1/3">Giảm giá</label>
                                     <div class="flex w-2/3 gap-1">
@@ -225,7 +217,6 @@
                                         <select name="discType" onchange="calcPreview()" class="w-1/3 border border-gray-300 rounded p-2 bg-gray-50 outline-none"><option value="money">VNĐ</option><option value="percent">%</option></select>
                                     </div>
                                 </div>
-
                                 <div class="flex gap-3">
                                     <input type="number" name="shippingFee" value="0" placeholder="Phí Ship (Tiệm chi trả)" class="w-full border border-red-200 bg-red-50 rounded-lg p-2 text-red-600 text-sm outline-none focus:border-red-500">
                                 </div>
@@ -249,21 +240,15 @@
             <div class="p-3 text-center text-xs text-gray-500 bg-white">Hướng camera điện thoại vào mã vạch trên hóa đơn để quét</div>
         </div>
     </div>
-
     <div id="tracking-modal" class="fixed inset-0 bg-slate-900/90 hidden z-[70] flex items-center justify-center p-4 md:p-10">
         <div class="bg-white w-full max-w-3xl rounded-xl overflow-hidden shadow-2xl flex flex-col h-full max-h-[85vh]">
-            <div class="px-4 py-3 border-b flex justify-between items-center bg-brand-600 text-white">
-                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Tra cứu hành trình</h3>
-                <button onclick="closeTracking()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
-            </div>
+            <div class="px-4 py-3 border-b flex justify-between items-center bg-brand-600 text-white"><h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Tra cứu hành trình</h3><button onclick="closeTracking()" class="text-white hover:text-gray-200 text-2xl">&times;</button></div>
             <div class="flex-1 overflow-y-auto bg-gray-50 relative" id="YQContainer"></div>
         </div>
     </div>
 
     <script>
-        // CONFIG
         const DEFAULT_API_URL = ""; 
-        
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
@@ -276,7 +261,6 @@
         let configRate = localStorage.getItem('tg_rate_v31') || 10;
         document.getElementById('config-rate').value = configRate;
 
-        // UI HELPERS
         function showStatus(msg, type='loading') {
             const m = document.getElementById('sync-status-mobile');
             const d = document.getElementById('sync-status-desktop');
@@ -311,11 +295,9 @@
             }
         }
 
-        // --- QUẢN LÝ SẢN PHẨM TRONG FORM (NEW) ---
         function addProductRow(name = '', qty = 1, price = '') {
             const container = document.getElementById('product-rows-container');
             const rowId = 'row_' + Date.now() + Math.floor(Math.random() * 100);
-            
             const html = `
                 <div id="${rowId}" class="prod-row flex gap-2 items-start bg-white p-2 rounded border border-gray-200">
                     <div class="flex-1 space-y-2">
@@ -338,79 +320,38 @@
             updateProdList();
         }
 
-        function removeProductRow(rowId) {
-            const row = document.getElementById(rowId);
-            if(row) { row.remove(); calcPreview(); }
-        }
-
-        function autoFillRowPrice(input) {
-            const row = input.closest('.prod-row');
-            const val = input.value;
-            if(prodDb[val]) {
-                row.querySelector('.p-price').value = prodDb[val];
-                calcPreview();
-            }
-        }
+        function removeProductRow(rowId) { const row = document.getElementById(rowId); if(row) { row.remove(); calcPreview(); } }
+        function autoFillRowPrice(input) { const row = input.closest('.prod-row'); const val = input.value; if(prodDb[val]) { row.querySelector('.p-price').value = prodDb[val]; calcPreview(); } }
 
         function calcPreview() {
             const f = document.getElementById('form-order');
-            
-            // Tính tổng tiền sản phẩm
             let totalItemsPrice = 0;
-            document.querySelectorAll('.prod-row').forEach(row => {
-                let q = Number(row.querySelector('.p-qty').value) || 0;
-                let p = Number(row.querySelector('.p-price').value) || 0;
-                totalItemsPrice += (q * p);
-            });
-
-            // Tính giảm giá
-            const dType = f.discType.value;
-            const dVal = Number(f.discVal.value) || 0;
+            document.querySelectorAll('.prod-row').forEach(row => { let q = Number(row.querySelector('.p-qty').value) || 0; let p = Number(row.querySelector('.p-price').value) || 0; totalItemsPrice += (q * p); });
+            const dType = f.discType.value; const dVal = Number(f.discVal.value) || 0;
             const discount = dType === 'percent' ? totalItemsPrice * (dVal/100) : dVal;
-
-            // Lấy phí ship khách trả
             const cShip = Number(f.customerShipFee.value) || 0;
-
             const finalTotal = Math.max(0, totalItemsPrice - discount) + cShip;
             document.getElementById('preview-total').innerText = finalTotal.toLocaleString('vi-VN') + ' ₫';
         }
 
-
-        // --- TIN NHẮN TỰ ĐỘNG THÔNG MINH ---
         function copyMessage(idx) {
             const o = orders[idx];
             let danhXung = o.salutation ? o.salutation.toLowerCase() : 'bạn';
-            
-            // Xử lý chuỗi sản phẩm đẹp hơn
             let dsSanPham = o.product;
-            if (o.items && o.items.length > 0) {
-                dsSanPham = o.items.map(i => `${i.qty} ${i.name}`).join(', ');
-            }
-
-            let paymentWarning = o.isCOD ? 
-                "Lưu ý giúp Tiệm là mình **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : 
-                "Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
-            
+            if (o.items && o.items.length > 0) { dsSanPham = o.items.map(i => `${i.qty} ${i.name}`).join(', '); }
+            let paymentWarning = o.isCOD ? "Lưu ý giúp Tiệm là mình **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : "Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
             let trackInfo = o.trackingCode ? `Mã vận đơn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
-
             let msg = `Dạ tiệm giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã thương mến và ủng hộ tiệm giấy Thứ Ba! Chúc ${danhXung} một ngày thật an lành!`;
             
-            navigator.clipboard.writeText(msg).then(() => {
-                showStatus('Đã copy tin nhắn Zalo/Mess', 'success');
-            }).catch(err => {
-                alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg);
-            });
+            navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn Zalo/Mess', 'success'); }).catch(err => { alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg); });
         }
 
-        // ... Các hàm tracking và scanner giữ nguyên ...
         function trackOrder(code) { 
             if(!code) return; 
             document.getElementById('tracking-modal').classList.remove('hidden');
             const container = document.getElementById('YQContainer');
             container.innerHTML = '';
-            if (typeof YQV5 === 'undefined') {
-                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center mt-10"><i class="fa-solid fa-shield-halved text-5xl text-gray-300 mb-4"></i><p class="text-red-500 font-bold mb-2 text-lg">Trình duyệt chặn Plugin tra cứu!</p><p class="text-sm text-gray-500 mb-6">Vui lòng tắt trình chặn quảng cáo, hoặc mở tab xem an toàn.</p><a href="https://t.17track.net/vi#nums=${code}" target="_blank" onclick="closeTracking()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold transition">Xem hành trình</a></div>`; return;
-            }
+            if (typeof YQV5 === 'undefined') { container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-6 text-center mt-10"><i class="fa-solid fa-shield-halved text-5xl text-gray-300 mb-4"></i><p class="text-red-500 font-bold mb-2 text-lg">Trình duyệt chặn Plugin tra cứu!</p><p class="text-sm text-gray-500 mb-6">Vui lòng tắt trình chặn quảng cáo, hoặc mở tab xem an toàn.</p><a href="https://t.17track.net/vi#nums=${code}" target="_blank" onclick="closeTracking()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold transition">Xem hành trình</a></div>`; return; }
             try { YQV5.trackSingle({ YQ_ContainerId: "YQContainer", YQ_Height: 600, YQ_Fc: "0", YQ_Lang: "vi", YQ_Num: code }); } 
             catch(e) { container.innerHTML = '<p class="text-center text-red-500 mt-10">Lỗi tải dữ liệu. Hãy tải lại trang web.</p>'; }
         }
@@ -424,7 +365,6 @@
         }
         function stopScan() { document.getElementById('scanner-modal').classList.add('hidden'); if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null;} }
 
-        // BIỂU ĐỒ & REPORT
         let revChart = null;
         function updateChart(filteredOrders) {
             const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -432,25 +372,16 @@
             filteredOrders.forEach(o => {
                 if (o.status !== 'done' && o.status !== 'returned') return;
                 const dateStr = new Date(o.date).toLocaleDateString('vi-VN', {day:'2-digit', month:'2-digit'});
-                
-                // Final thực thu: Tính cả tiền ship khách trả
                 let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0);
-                
-                let ship = Number(o.shippingFee) || 0; 
-                let cm = o.refCode ? (o.price * configRate / 100) : 0; // Hoa hồng không tính trên tiền ship của khách
-                
+                let ship = Number(o.shippingFee) || 0; let cm = o.refCode ? (o.price * configRate / 100) : 0; 
                 dateMap[dateStr] = (dateMap[dateStr] || 0) + (o.status === 'done' ? (final - cm - ship) : -ship);
             });
             const labels = Object.keys(dateMap).sort((a, b) => { const [da, ma] = a.split('/'); const [db, mb] = b.split('/'); return new Date(2000, ma-1, da) - new Date(2000, mb-1, db); });
             const data = labels.map(l => dateMap[l]);
             if(revChart) revChart.destroy();
-            revChart = new Chart(ctx, {
-                type: 'bar', data: { labels: labels.length ? labels : ['Chưa có DL'], datasets: [{ label: 'Thực thu (₫)', data: data.length ? data : [0], backgroundColor: '#ea580c', borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
+            revChart = new Chart(ctx, { type: 'bar', data: { labels: labels.length ? labels : ['Chưa có DL'], datasets: [{ label: 'Thực thu (₫)', data: data.length ? data : [0], backgroundColor: '#ea580c', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
         }
 
-        // CLOUD LOGIC
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
         async function syncData() {
             if(!API_URL) return; showStatus("Đồng bộ...", "loading");
@@ -473,7 +404,6 @@
         async function toggleMoney(idx, isCollected) { orders[idx].isMoneyCollected = isCollected; await saveToCloud(); runReport(); renderOrders(); }
         async function toggleComm(idx, isPaid) { orders[idx].isCommPaid = isPaid; await saveToCloud(); runReport(); }
 
-        // RENDER ORDERS
         function renderOrders() {
             const d = document.getElementById('order-list-desktop'); const m = document.getElementById('order-list-mobile');
             d.innerHTML = ''; m.innerHTML = '';
@@ -486,7 +416,6 @@
 
             sorted.forEach((o) => {
                 let idx = orders.findIndex(x => x.id === o.id);
-                // Cập nhật công thức tính final (bao gồm tiền ship khách trả)
                 let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0);
                 
                 let isDone = o.status === 'done'; let isReturned = o.status === 'returned';
@@ -497,15 +426,15 @@
                 let scanBtn = `<button onclick="startScan(${idx})" class="bg-slate-100 text-slate-600 px-2 rounded border border-slate-200 hover:bg-slate-200 transition" title="Quét mã vạch"><i class="fa-solid fa-qrcode"></i></button>`;
                 let codBadge = o.isCOD ? (o.isMoneyCollected ? '<span class="text-xs font-bold text-blue-600 px-1 bg-blue-50 rounded">COD (Đã thu)</span>' : '<span class="text-xs font-bold text-orange-500 px-1 bg-orange-50 rounded">Thu COD</span>') : '<span class="text-xs font-bold text-green-500 px-1 bg-green-50 rounded">Đã CK</span>';
 
+                // NÚT BẤM CẬP NHẬT GỌI ĐÚNG printOrder (A6) và printInvoice (80mm)
                 let actionBtns = `
                     <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="text-slate-400 hover:text-blue-600 transition" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="printShippingLabel(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Vận Đơn (Dán hộp A6)"><i class="fa-solid fa-box-open"></i></button>
-                    <button onclick="printInvoice(${idx})" class="text-slate-400 hover:text-brand-600 transition" title="In Hóa Đơn (Bỏ trong)"><i class="fa-solid fa-file-invoice"></i></button>
+                    <button onclick="printOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Vận Đơn (A6)"><i class="fa-solid fa-box-open"></i></button>
+                    <button onclick="printInvoice(${idx})" class="text-slate-400 hover:text-brand-600 transition" title="In Hóa Đơn (80mm)"><i class="fa-solid fa-file-invoice"></i></button>
                     <button onclick="deleteOrder(${idx})" class="text-slate-400 hover:text-red-500 transition" title="Xóa"><i class="fa-solid fa-trash"></i></button>
                 `;
 
-                // Desktop
                 d.innerHTML += `<tr class="hover:bg-slate-50 border-b border-gray-100">
                     <td class="p-4 text-xs text-gray-500">${new Date(o.date).toLocaleDateString('vi-VN')}</td>
                     <td class="p-4"><div class="font-bold text-slate-800">${o.salutation||'Bạn'} ${o.customerName}</div><div class="text-xs text-gray-500">${o.phone}</div></td>
@@ -518,13 +447,12 @@
                     <td class="p-4 text-center space-x-2 flex justify-center items-center gap-2 mt-4">${actionBtns}</td>
                 </tr>`;
                 
-                // Mobile
                 let trackBtnMobile = o.trackingCode ? `<button onclick="trackOrder('${o.trackingCode}')" class="bg-blue-50 text-blue-600 px-3 rounded-lg border border-blue-200 hover:bg-blue-100 transition"><i class="fa-solid fa-truck-fast"></i></button>` : '';
                 let scanBtnMobile = `<button onclick="startScan(${idx})" class="bg-slate-100 text-slate-600 px-3 rounded-lg border border-slate-200 hover:bg-slate-200 transition"><i class="fa-solid fa-qrcode"></i></button>`;
                 let actionBtnsMobile = `
                     <button onclick="copyMessage(${idx})" class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="printShippingLabel(${idx})" class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></button>
+                    <button onclick="printOrder(${idx})" class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></button>
                     <button onclick="printInvoice(${idx})" class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center"><i class="fa-solid fa-file-invoice"></i></button>
                     <button onclick="deleteOrder(${idx})" class="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                 `;
@@ -554,28 +482,17 @@
             const tb = document.getElementById('report-table'); tb.innerHTML = ''; 
             filtered.forEach(o => { 
                 let realIdx = orders.findIndex(x => x.id === o.id);
-                // Khách trả: Cộng thêm tiền ship khách
                 let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
-                
-                let ship = Number(o.shippingFee) || 0; 
-                let cm = o.refCode ? (o.price * configRate / 100) : 0; 
-                let isDone = o.status === 'done'; let isReturned = o.status === 'returned';
-                let actualCm = isDone ? cm : 0; 
-                let net = isDone ? (final - actualCm - ship) : (isReturned ? -ship : 0);
-                
-                rev += net; commTotal += actualCm; 
-                if (isDone || isReturned) totalShip += ship;
-                if(!o.isCommPaid && actualCm > 0) commDebt += actualCm; 
-                if (o.isCOD && isDone) { if (o.isMoneyCollected) codCollectedTotal += final; else codPendingTotal += final; }
+                let ship = Number(o.shippingFee) || 0; let cm = o.refCode ? (o.price * configRate / 100) : 0; 
+                let isDone = o.status === 'done'; let isReturned = o.status === 'returned'; let actualCm = isDone ? cm : 0; let net = isDone ? (final - actualCm - ship) : (isReturned ? -ship : 0);
+                rev += net; commTotal += actualCm; if (isDone || isReturned) totalShip += ship; if(!o.isCommPaid && actualCm > 0) commDebt += actualCm; if (o.isCOD && isDone) { if (o.isMoneyCollected) codCollectedTotal += final; else codPendingTotal += final; }
 
                 let commCheck = actualCm > 0 ? `<input type="checkbox" class="comm-check w-4 h-4 accent-purple-600" ${o.isCommPaid?'checked':''} onchange="toggleComm(${realIdx}, this.checked)">` : '-';
                 let codCheck = o.isCOD ? `<input type="checkbox" class="cod-check w-4 h-4 accent-blue-600" ${o.isMoneyCollected?'checked':''} onchange="toggleMoney(${realIdx}, this.checked)" title="Đã thu tiền từ shipper">` : '<span class="text-[10px] text-gray-400">Đã CK</span>';
-                
                 let netDisplay = isDone ? `<span class="text-brand-600 font-bold">${net.toLocaleString()}</span>` : (isReturned ? `<span class="text-red-500 font-bold">${net.toLocaleString()}</span>` : `<span class="text-[10px] text-gray-400">Chờ Xong</span>`);
 
                 tb.innerHTML += `<tr class="${(!isDone && !isReturned) ? 'opacity-70' : ''}"><td class="p-3 text-gray-500 text-xs">${new Date(o.date).toLocaleDateString('vi-VN')}</td><td class="p-3 text-sm"><div class="font-bold">${o.customerName}</div><div class="text-xs text-gray-500">${o.trackingCode || ''}</div><div class="text-[10px] text-purple-600 font-bold mt-1">${o.refCode||''}</div></td><td class="p-3 text-right text-sm font-medium">${final.toLocaleString()}</td><td class="p-3 text-center bg-blue-50">${codCheck}</td><td class="p-3 text-right text-sm text-gray-700">${actualCm > 0 ? actualCm.toLocaleString() : '-'}</td><td class="p-3 text-center bg-purple-50">${commCheck}</td><td class="p-3 text-right text-sm text-red-400">${ship > 0 ? ship.toLocaleString() : '-'}</td><td class="p-3 text-right">${netDisplay}</td></tr>`; 
             }); 
-            
             document.getElementById('report-rev').innerText = rev.toLocaleString() + ' ₫'; document.getElementById('report-comm-total').innerText = commTotal.toLocaleString() + ' ₫'; document.getElementById('report-comm-debt').innerText = commDebt.toLocaleString() + ' ₫'; document.getElementById('report-ship').innerText = totalShip.toLocaleString() + ' ₫'; document.getElementById('report-count').innerText = filtered.length; document.getElementById('report-cod-collected').innerText = codCollectedTotal.toLocaleString() + ' ₫'; document.getElementById('report-cod-pending').innerText = codPendingTotal.toLocaleString() + ' ₫'; 
         }
 
@@ -600,135 +517,67 @@
         function resetReport() { document.getElementById('filter-month').value=''; document.getElementById('filter-code').value=''; document.getElementById('filter-payment').value=''; runReport(); }
         
         function openCreateModal() { 
-            document.getElementById('form-order').reset(); 
-            document.querySelector('[name="orderIndex"]').value = -1; 
+            document.getElementById('form-order').reset(); document.querySelector('[name="orderIndex"]').value = -1; 
             document.getElementById('modal-title').innerText = "Tạo Đơn Mới"; 
-            document.getElementById('product-rows-container').innerHTML = ''; // Clear items
-            addProductRow(); // Add 1 blank row
-            document.getElementById('modal-order').classList.remove('hidden'); 
-            updateProdList(); calcPreview(); 
+            document.getElementById('product-rows-container').innerHTML = ''; 
+            addProductRow(); 
+            document.getElementById('modal-order').classList.remove('hidden'); updateProdList(); calcPreview(); 
         }
         
         function openEditModal(idx) { 
             const o = orders[idx]; const f = document.getElementById('form-order'); 
-            f.orderIndex.value = idx; 
-            f.salutation.value = o.salutation || 'Bạn';
-            f.customerName.value = o.customerName; 
-            f.phone.value = o.phone; 
-            f.address.value = o.address; 
-            
-            // Xử lý nạp Sản Phẩm
+            f.orderIndex.value = idx; f.salutation.value = o.salutation || 'Bạn'; f.customerName.value = o.customerName; f.phone.value = o.phone; f.address.value = o.address; 
             document.getElementById('product-rows-container').innerHTML = '';
-            if (o.items && o.items.length > 0) {
-                o.items.forEach(i => addProductRow(i.name, i.qty, i.price));
-            } else {
-                // Tương thích ngược với đơn hàng cũ chưa có mảng items
-                addProductRow(o.product, 1, o.price);
-            }
-
-            f.refCode.value = o.refCode || ''; 
-            f.customerShipFee.value = o.customerShipFee || 0;
-            f.shippingFee.value = o.shippingFee || 0; 
-            f.discVal.value = o.discVal; f.discType.value = o.discType; 
-            f.isCOD.checked = o.isCOD; 
-            document.getElementById('modal-title').innerText = "Sửa Đơn Hàng"; 
-            document.getElementById('modal-order').classList.remove('hidden'); 
-            updateProdList(); calcPreview(); 
+            if (o.items && o.items.length > 0) { o.items.forEach(i => addProductRow(i.name, i.qty, i.price)); } else { addProductRow(o.product, 1, o.price); }
+            f.refCode.value = o.refCode || ''; f.customerShipFee.value = o.customerShipFee || 0; f.shippingFee.value = o.shippingFee || 0; 
+            f.discVal.value = o.discVal; f.discType.value = o.discType; f.isCOD.checked = o.isCOD; 
+            document.getElementById('modal-title').innerText = "Sửa Đơn Hàng"; document.getElementById('modal-order').classList.remove('hidden'); updateProdList(); calcPreview(); 
         }
         
         function closeModal() { document.getElementById('modal-order').classList.add('hidden'); }
         
         async function handleFormSubmit(e) { 
             e.preventDefault(); const f = e.target; const idx = parseInt(f.orderIndex.value); 
-            
-            // Đọc danh sách sản phẩm
-            let items = [];
-            let totalItemsPrice = 0;
-            let productNames = [];
-            const rows = document.querySelectorAll('.prod-row');
-            
-            rows.forEach(row => {
-                let n = row.querySelector('.p-name').value.trim();
-                let q = Number(row.querySelector('.p-qty').value) || 1;
-                let pr = Number(row.querySelector('.p-price').value) || 0;
-                if(n) {
-                    items.push({name: n, qty: q, price: pr});
-                    totalItemsPrice += (q * pr);
-                    productNames.push(`${n} (x${q})`);
-                    prodDb[n] = pr; // Lưu cache
-                }
+            let items = []; let totalItemsPrice = 0; let productNames = [];
+            document.querySelectorAll('.prod-row').forEach(row => {
+                let n = row.querySelector('.p-name').value.trim(); let q = Number(row.querySelector('.p-qty').value) || 1; let pr = Number(row.querySelector('.p-price').value) || 0;
+                if(n) { items.push({name: n, qty: q, price: pr}); totalItemsPrice += (q * pr); productNames.push(`${n} (x${q})`); prodDb[n] = pr; }
             });
-
-            if(items.length === 0) {
-                alert("Vui lòng thêm ít nhất 1 sản phẩm!"); return;
-            }
-
+            if(items.length === 0) { alert("Vui lòng thêm ít nhất 1 sản phẩm!"); return; }
             localStorage.setItem('tg_prods_v31', JSON.stringify(prodDb));
-
-            const legacyProductString = productNames.join(', ');
-            const cShipFee = Number(f.customerShipFee.value) || 0;
-
             const data = { 
-                salutation: f.salutation.value,
-                customerName: f.customerName.value, 
-                phone: f.phone.value, 
-                address: f.address.value, 
-                
-                product: legacyProductString, // String cho Sheet cũ
-                price: totalItemsPrice,       // Giá tổng SP cho Sheet cũ
-                items: items,                 // Array lưu riêng trong App
-                customerShipFee: cShipFee,    // Cột/Biến mới
-                
-                refCode: f.refCode.value.trim().toUpperCase(), 
-                shippingFee: Number(f.shippingFee.value) || 0, 
-                discVal: Number(f.discVal.value) || 0, 
-                discType: f.discType.value, 
-                isCOD: f.isCOD.checked, 
-                isCommPaid: idx !== -1 ? orders[idx].isCommPaid : false, 
-                isMoneyCollected: idx !== -1 ? orders[idx].isMoneyCollected : false 
+                salutation: f.salutation.value, customerName: f.customerName.value, phone: f.phone.value, address: f.address.value, 
+                product: productNames.join(', '), price: totalItemsPrice, items: items, customerShipFee: Number(f.customerShipFee.value) || 0, 
+                refCode: f.refCode.value.trim().toUpperCase(), shippingFee: Number(f.shippingFee.value) || 0, discVal: Number(f.discVal.value) || 0, discType: f.discType.value, isCOD: f.isCOD.checked, isCommPaid: idx !== -1 ? orders[idx].isCommPaid : false, isMoneyCollected: idx !== -1 ? orders[idx].isMoneyCollected : false 
             }; 
-
-            if(idx === -1) { orders.unshift({ id: Date.now(), date: new Date().toISOString(), status: 'pending', trackingCode: '', ...data }); } 
-            else { orders[idx] = { ...orders[idx], ...data }; } 
-            
+            if(idx === -1) { orders.unshift({ id: Date.now(), date: new Date().toISOString(), status: 'pending', trackingCode: '', ...data }); } else { orders[idx] = { ...orders[idx], ...data }; } 
             renderOrders(); closeModal(); await saveToCloud(); 
         }
         
         async function updateField(idx, field, val) { if(!val && field==='trackingCode') return; orders[idx][field] = field === 'trackingCode' ? val.toUpperCase() : val; renderOrders(); await saveToCloud(); }
         async function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); renderOrders(); await saveToCloud(); } }
         
-        // IN A5
+        // --- 1. IN VẬN ĐƠN DÁN HỘP (A6 - MONOSPACE - LOGO) ---
         function printOrder(idx) { 
             const o = orders[idx]; 
-            // Cập nhật tính tiền (có cộng phí ship khách trả nếu có)
             let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
-            
-            // Xử lý danh sách nhiều sản phẩm
             let prodHtml = '';
-            if(o.items && o.items.length > 0) {
-                prodHtml = o.items.map(i => `<div style="margin-bottom: 4px;"><b>[x${i.qty}]</b> ${i.name}</div>`).join('');
-            } else {
-                prodHtml = `<div><b>[x1]</b> ${o.product}</div>`;
-            }
+            if(o.items && o.items.length > 0) { prodHtml = o.items.map(i => `<div style="margin-bottom: 4px;"><b>[x${i.qty}]</b> ${i.name}</div>`).join(''); } 
+            else { prodHtml = `<div><b>[x1]</b> ${o.product}</div>`; }
 
             const w = window.open('', '_blank'); 
             w.document.write(`<html><head><title>In Vận Đơn A6</title><style>@page{size:100mm 150mm;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;height:96%;border:2px solid #000;padding:8px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.content{flex-grow:1;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:5px;">${prodHtml}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></div></body></html>`); 
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
-        // IN TEM NHIỆT (80mm)
+        // --- 2. IN HÓA ĐƠN BỎ TRONG HỘP (80mm - WABI SABI) ---
         function printInvoice(idx) {
             const o = orders[idx]; 
             let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
             let dXung = o.salutation ? o.salutation : 'bạn';
-            
-            // Chi tiết giá từng món
             let prodHtml = '';
-            if(o.items && o.items.length > 0) {
-                prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>${i.qty} x ${i.name}</span><span style="font-weight:bold;">${(i.qty * i.price).toLocaleString()}</span></div>`).join('');
-            } else {
-                prodHtml = `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>1 x ${o.product}</span><span style="font-weight:bold;">${(o.price).toLocaleString()}</span></div>`;
-            }
+            if(o.items && o.items.length > 0) { prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>${i.qty} x ${i.name}</span><span style="font-weight:bold;">${(i.qty * i.price).toLocaleString()}</span></div>`).join(''); } 
+            else { prodHtml = `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>1 x ${o.product}</span><span style="font-weight:bold;">${(o.price).toLocaleString()}</span></div>`; }
 
             let cShipHtml = o.customerShipFee ? `<div style="display:flex; justify-content:space-between; margin-top: 8px; font-size: 12px; color: #333;"><span>Phí ship</span><span>${Number(o.customerShipFee).toLocaleString()}</span></div>` : '';
             let discValCalc = o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal;
@@ -749,29 +598,20 @@
             </style></head><body>
             <div class="receipt">
                 <div class="logo-text">tiệm giấy Thứ Ba</div>
-                <div class="sub-text">tái chế giấy cùng Tiệm nhé!</div>
+                <div class="sub-text">Mộc mạc & An yên</div>
                 
                 <div class="info">
                     <div>Thân gửi: <b>${dXung} ${o.customerName}</b></div>
                 </div>
-
                 <div class="divider"></div>
                 <div style="font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Món đồ đã chọn</div>
-                
                 ${prodHtml}
                 ${cShipHtml}
                 ${discHtml}
-                
-                <div class="total-row">
-                    <span>Tổng cộng:</span>
-                    <span>${final.toLocaleString()} ₫</span>
-                </div>
-
+                <div class="total-row"><span>Tổng thương:</span><span>${final.toLocaleString()} ₫</span></div>
                 <div class="thank-you">
-                    "Mỗi mẻ giấy, mỗi chi tiết đều mang vẻ đẹp của sự không hoàn hảo. Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${dXung.toLowerCase()} một chút niềm vui trong ngày."
-                    <br><br>
-                    Cảm ơn ${dXung.toLowerCase()} thật nhiều!
-                </div>
+                    "Mỗi mẻ giấy, mỗi chi tiết đều mang vẻ đẹp của sự không hoàn hảo. Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${dXung.toLowerCase()} một chút bình yên trong ngày."
+                    <br><br>Cảm ơn ${dXung.toLowerCase()} thật nhiều!<br>
             </div>
             </body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
@@ -780,18 +620,11 @@
         function updateProdList() { const dl = document.getElementById('prod-list'); dl.innerHTML = ''; Object.keys(prodDb).forEach(k => dl.innerHTML += `<option value="${k}">`); }
         function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v31', configRate); alert('Đã lưu cấu hình!'); }
         
-        // Start
         renderOrders();
         syncData();
     </script>
 <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Đã đăng ký App thành công'))
-                    .catch(err => console.log('Đăng ký App thất bại', err));
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('Đã đăng ký App thành công')).catch(err => console.log('Đăng ký App thất bại', err)); }); }
     </script>
 </body>
 </html>
