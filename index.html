@@ -698,55 +698,21 @@
         async function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); renderOrders(); await saveToCloud(); } }
         
         // IN A5
-        function printShippingLabel(idx) { 
+        function printOrder(idx) { 
             const o = orders[idx]; 
+            // Cập nhật tính tiền (có cộng phí ship khách trả nếu có)
             let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
             
-            // Chỉ hiển thị Số lượng và Tên sản phẩm để nhặt hàng
+            // Xử lý danh sách nhiều sản phẩm
             let prodHtml = '';
             if(o.items && o.items.length > 0) {
-                prodHtml = o.items.map(i => `<div style="padding: 4px 0; border-bottom: 1px dashed #ccc;"><b>[x${i.qty}]</b> ${i.name}</div>`).join('');
+                prodHtml = o.items.map(i => `<div style="margin-bottom: 4px;"><b>[x${i.qty}]</b> ${i.name}</div>`).join('');
             } else {
                 prodHtml = `<div><b>[x1]</b> ${o.product}</div>`;
             }
 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>Vận Đơn Tiệm giấy Thứ Ba</title><style>
-                @page { margin: 0; size: 100mm 150mm; }
-                body { font-family: sans-serif; margin: 0; padding: 5mm; color: #000; box-sizing: border-box; }
-                .box { border: 2px solid #000; height: 100%; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; border-radius: 8px;}
-                .header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
-                .title { font-size: 24px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
-                .receiver { margin-bottom: 15px; }
-                .r-title { font-size: 14px; font-weight: bold; background: #000; color: #fff; display: inline-block; padding: 4px 10px; border-radius: 4px; margin-bottom: 8px;}
-                .name { font-size: 22px; font-weight: bold; text-transform: uppercase;}
-                .phone { font-size: 20px; font-weight: bold; margin: 5px 0;}
-                .address { font-size: 16px; line-height: 1.4; }
-                .items { border-top: 2px dashed #000; padding-top: 10px; flex-grow: 1;}
-                .items-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-                .item-list { font-size: 16px; }
-                .footer { border-top: 3px solid #000; padding-top: 15px; text-align: center; }
-                .cod-box { border: 4px solid #000; padding: 10px; font-size: 30px; font-weight: 900; margin-top: 10px; background: #f0f0f0;}
-                .paid-box { border: 4px solid #000; padding: 10px; font-size: 24px; font-weight: 900; margin-top: 10px; }
-            </style></head><body>
-            <div class="box">
-                <div class="header"><div class="title">tiệm giấy Thứ Ba</div></div>
-                <div class="receiver">
-                    <div class="r-title">ĐẾN (TO):</div>
-                    <div class="name">${o.customerName}</div>
-                    <div class="phone">${o.phone}</div>
-                    <div class="address">${o.address}</div>
-                </div>
-                <div class="items">
-                    <div class="items-title">Ghi chú hàng hóa:</div>
-                    <div class="item-list">${prodHtml}</div>
-                </div>
-                <div class="footer">
-                    ${o.isCOD ? `<div style="font-size:16px; font-weight:bold;">TIỀN THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} VNĐ</div>` : `<div class="paid-box">ĐÃ THANH TOÁN (NO COD)</div>`}
-                    ${o.trackingCode ? `<div style="margin-top:15px; font-size:16px;">Mã Vận Đơn: <b>${o.trackingCode}</b></div>` : ''}
-                </div>
-            </div>
-            </body></html>`); 
+            w.document.write(`<html><head><title>In Vận Đơn A6</title><style>@page{size:100mm 150mm;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;height:96%;border:2px solid #000;padding:8px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.content{flex-grow:1;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:5px;">${prodHtml}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></div></body></html>`); 
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
@@ -780,15 +746,13 @@
                 .info { font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
                 .total-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #000; font-size: 16px; font-weight: 600; }
                 .thank-you { text-align: center; margin-top: 25px; font-size: 12px; line-height: 1.6; font-style: italic; color: #444; }
-                .wabi-sabi { display: inline-block; padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px; margin-top: 10px; font-size: 10px; letter-spacing: 1px; }
             </style></head><body>
             <div class="receipt">
                 <div class="logo-text">tiệm giấy Thứ Ba</div>
-                <div class="sub-text">Mộc mạc & An yên</div>
+                <div class="sub-text">tái chế giấy cùng Tiệm nhé!</div>
                 
                 <div class="info">
                     <div>Thân gửi: <b>${dXung} ${o.customerName}</b></div>
-                    <div>Ngày gửi: ${new Date(o.date).toLocaleDateString('vi-VN')}</div>
                 </div>
 
                 <div class="divider"></div>
@@ -807,8 +771,6 @@
                     "Mỗi mẻ giấy, mỗi chi tiết đều mang vẻ đẹp của sự không hoàn hảo. Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${dXung.toLowerCase()} một chút niềm vui trong ngày."
                     <br><br>
                     Cảm ơn ${dXung.toLowerCase()} thật nhiều!
-                    <br>
-                    <div class="wabi-sabi">WABI - SABI</div>
                 </div>
             </div>
             </body></html>`);
