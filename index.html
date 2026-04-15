@@ -65,7 +65,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 33.0</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 34.0 Pronoun</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -178,7 +178,19 @@
                         <div class="space-y-3">
                             <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1">1. Khách hàng <span class="text-[10px] text-gray-400 normal-case font-normal">(Nhập SĐT tự điền)</span></h4>
                             <input type="tel" name="phone" required oninput="autoFillCRM(this.value)" placeholder="Số điện thoại *" class="w-full border border-brand-300 bg-orange-50 rounded-lg p-3 outline-none focus:border-brand-500 font-bold">
-                            <input type="text" name="customerName" required placeholder="Tên khách *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500">
+                            
+                            <div class="flex gap-2">
+                                <select name="pronoun" class="w-1/3 border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500 bg-white font-medium text-slate-700">
+                                    <option value="Bạn">Bạn</option>
+                                    <option value="Anh">Anh</option>
+                                    <option value="Chị">Chị</option>
+                                    <option value="Em">Em</option>
+                                    <option value="Cô">Cô</option>
+                                    <option value="Chú">Chú</option>
+                                </select>
+                                <input type="text" name="customerName" required placeholder="Tên khách *" class="w-2/3 border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500">
+                            </div>
+
                             <textarea name="address" required rows="2" placeholder="Địa chỉ giao hàng *" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-brand-500 resize-none"></textarea>
                             
                             <h4 class="text-xs font-bold text-brand-600 uppercase border-b pb-1 mt-4">Thông tin thêm</h4>
@@ -206,7 +218,10 @@
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-between bg-slate-800 text-white p-4 rounded-lg shadow"><span class="text-sm opacity-90">Tổng Khách Trả:</span><span class="text-xl font-bold text-brand-500" id="preview-total">0 ₫</span></div>
-                    <div class="mt-6 grid grid-cols-2 gap-3 pb-safe"><button type="button" onclick="closeModal()" class="py-3 text-gray-600 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition">Hủy</button><button type="submit" class="py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold shadow-lg transition">Lưu Đơn</button></div>
+                    <div class="mt-6 grid grid-cols-2 gap-3 pb-safe">
+                        <button type="button" onclick="closeModal()" class="py-3 text-gray-600 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition">Hủy</button>
+                        <button type="submit" id="btn-submit-order" class="py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold shadow-lg transition">Lưu Đơn</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -237,17 +252,19 @@
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
-        // Auto-migrate data v32 -> v33
-        let orders = JSON.parse(localStorage.getItem('tg_orders_v33'));
+        // Auto-migrate data thêm trường xưng hô
+        let orders = JSON.parse(localStorage.getItem('tg_orders_v34'));
         if (!orders) {
-            orders = JSON.parse(localStorage.getItem('tg_orders_v32')) || [];
+            orders = JSON.parse(localStorage.getItem('tg_orders_v33')) || JSON.parse(localStorage.getItem('tg_orders_v32')) || [];
             orders.forEach(o => {
-                if(o.customerShipFee === undefined) o.customerShipFee = 0; // Thêm trường phí ship khách mới
+                if(!o.pronoun) o.pronoun = "Bạn"; // Gán mặc định nếu thiếu
+                if(!o.items) { o.items = [{name: o.product || 'Sản phẩm', qty: 1, price: o.price || 0}]; o.totalPrice = o.price || 0; }
+                if(o.customerShipFee === undefined) o.customerShipFee = 0;
             });
-            if(orders.length > 0) localStorage.setItem('tg_orders_v33', JSON.stringify(orders));
+            if(orders.length > 0) localStorage.setItem('tg_orders_v34', JSON.stringify(orders));
         }
-        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v33')) || JSON.parse(localStorage.getItem('tg_prods_v32')) || {};
-        let configRate = localStorage.getItem('tg_rate_v33') || localStorage.getItem('tg_rate_v32') || 10;
+        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v34')) || JSON.parse(localStorage.getItem('tg_prods_v33')) || {};
+        let configRate = localStorage.getItem('tg_rate_v34') || localStorage.getItem('tg_rate_v33') || 10;
         document.getElementById('config-rate').value = configRate;
 
         function showStatus(msg, type='loading') {
@@ -268,6 +285,7 @@
             if(id==='reports') runReport();
         }
 
+        // CRM Cập nhật thêm việc nhớ danh xưng
         function autoFillCRM(phone) {
             if(phone.length < 9) return;
             const f = document.getElementById('form-order');
@@ -275,16 +293,27 @@
             if(found) {
                 if(!f.customerName.value) f.customerName.value = found.customerName;
                 if(!f.address.value) f.address.value = found.address;
+                if(found.pronoun) f.pronoun.value = found.pronoun;
                 showStatus("Đã tải thông tin khách", "success");
             }
         }
 
+        // TIN NHẮN CÁ NHÂN HÓA XƯNG HÔ
         function copyMessage(idx) {
             const o = orders[idx];
-            let paymentWarning = o.isCOD ? "Bạn lưu ý **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : "Đơn hàng của bạn đã được thanh toán trước, nên bạn **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
-            let trackInfo = o.trackingCode ? `Mã vận đơn của bạn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho bạn sớm nha.`;
+            const p = o.pronoun || "Bạn";
+            const pLower = p.toLowerCase();
+
+            let paymentWarning = o.isCOD ? 
+                `${p} lưu ý **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé.` : 
+                `Đơn hàng của ${pLower} đã được thanh toán trước, nên ${pLower} **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.`;
+            
+            let trackInfo = o.trackingCode ? `Mã vận đơn của ${pLower} là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${pLower} sớm nha.`;
+            
             let prodStr = o.items.map(i => `${i.qty}x ${i.name}`).join(', ');
-            let msg = `Dạ tiệm giấy Thứ Ba chào ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${prodStr}] cho bạn rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n Nhận được hàng, bạn giúp Tiệm quay lại chút video mở hộp nha, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ bạn kịp thời và chu đáo nhất ạ.\n\nCảm ơn bạn đã ủng hộ Tiệm! Chúc bạn một ngày thật an lành ✨`;
+
+            let msg = `Dạ tiệm giấy Thứ Ba chào ${pLower} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${prodStr}] cho ${pLower} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\n Nhận được hàng, ${pLower} giúp Tiệm quay lại chút video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${pLower} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${pLower} đã ủng hộ Tiệm! Chúc ${pLower} một ngày thật an lành ✨`;
+            
             navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn', 'success'); }).catch(err => { alert("Không thể copy tự động:\n\n" + msg); });
         }
 
@@ -314,13 +343,10 @@
                 if (o.status !== 'done' && o.status !== 'returned') return;
                 const dateStr = new Date(o.date).toLocaleDateString('vi-VN', {day:'2-digit', month:'2-digit'});
                 
-                // Final = Tổng SP - Giảm giá + Ship khách trả
                 let final = o.totalPrice - (o.discType === 'percent' ? o.totalPrice*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0);
-                
-                let ship = Number(o.shippingFee) || 0; // Phí trả hãng
+                let ship = Number(o.shippingFee) || 0; 
                 let cm = o.refCode ? (o.totalPrice * configRate / 100) : 0;
                 
-                // Thực thu = Khách trả - Trả Hãng - Hoa Hồng
                 dateMap[dateStr] = (dateMap[dateStr] || 0) + (o.status === 'done' ? (final - cm - ship) : -ship);
             });
             const labels = Object.keys(dateMap).sort((a, b) => { const [da, ma] = a.split('/'); const [db, mb] = b.split('/'); return new Date(2000, ma-1, da) - new Date(2000, mb-1, db); });
@@ -337,12 +363,12 @@
                 const res = await fetch(API_URL, { signal: c.signal });
                 const data = await res.json();
                 orders = Array.isArray(data) ? data : orders;
-                localStorage.setItem('tg_orders_v33', JSON.stringify(orders));
+                localStorage.setItem('tg_orders_v34', JSON.stringify(orders));
                 renderOrders(); showStatus("Đã cập nhật", "success");
             } catch (err) { showStatus("Lỗi kết nối", "error"); console.log(err); }
         }
         async function saveToCloud() {
-            localStorage.setItem('tg_orders_v33', JSON.stringify(orders));
+            localStorage.setItem('tg_orders_v34', JSON.stringify(orders));
             if(!API_URL) return; showStatus("Lưu Cloud...", "loading");
             try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(orders) }); showStatus("Đã lưu", "success"); } catch (err) { showStatus("Lỗi mạng", "error"); }
         }
@@ -363,7 +389,6 @@
 
             sorted.forEach((o) => {
                 let idx = orders.findIndex(x => x.id === o.id);
-                // Khách trả = Tổng giá - Khuyến mãi + Ship khách trả
                 let final = o.totalPrice - (o.discType === 'percent' ? o.totalPrice*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0);
                 
                 let isDone = o.status === 'done'; let isReturned = o.status === 'returned';
@@ -387,7 +412,7 @@
 
                 d.innerHTML += `<tr class="hover:bg-slate-50 border-b border-gray-100">
                     <td class="p-4 text-xs text-gray-500">${new Date(o.date).toLocaleDateString('vi-VN')}</td>
-                    <td class="p-4"><div class="font-bold text-slate-800">${o.customerName}</div><div class="text-xs text-gray-500">${o.phone}</div></td>
+                    <td class="p-4"><div class="font-bold text-slate-800"><span class="text-[10px] text-gray-400 font-normal mr-1">${o.pronoun||'Bạn'}</span>${o.customerName}</div><div class="text-xs text-gray-500">${o.phone}</div></td>
                     <td class="p-4">${productListHtml}<div class="text-xs font-bold text-brand-600 mt-1">${final.toLocaleString()}₫</div>${custShipHtml}<div class="mt-1">${codBadge}</div></td>
                     <td class="p-4 text-center">
                         <div class="flex gap-1 mb-1"><input type="text" value="${o.trackingCode||''}" placeholder="Mã VĐ" class="w-full text-xs p-1 border rounded text-center uppercase outline-none focus:border-brand-500" onblur="updateField(${idx}, 'trackingCode', this.value)">${scanBtn} ${trackBtn}</div>
@@ -408,7 +433,7 @@
                 `;
 
                 m.innerHTML += `<div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative">
-                    <div class="flex justify-between items-start mb-2"><div><h3 class="font-bold text-slate-800 text-lg">${o.customerName}</h3><p class="text-xs text-gray-500">${new Date(o.date).toLocaleDateString('vi-VN')} - ${o.phone}</p></div><span class="px-2 py-1 rounded text-xs font-bold ${stColor}">${stText}</span></div>
+                    <div class="flex justify-between items-start mb-2"><div><h3 class="font-bold text-slate-800 text-lg"><span class="text-xs text-gray-400 font-normal mr-1">${o.pronoun||'Bạn'}</span>${o.customerName}</h3><p class="text-xs text-gray-500">${new Date(o.date).toLocaleDateString('vi-VN')} - ${o.phone}</p></div><span class="px-2 py-1 rounded text-xs font-bold ${stColor}">${stText}</span></div>
                     <div class="bg-gray-50 p-3 rounded-lg mb-3"><div class="space-y-1">${productListHtml}</div>${custShipHtml}<div class="flex justify-between mt-2 pt-2 border-t border-gray-200"><span class="font-bold text-brand-600">${final.toLocaleString()} ₫</span>${codBadge}</div></div>
                     <div class="flex gap-2 mb-2"><div class="flex-1 flex gap-1"><input type="text" value="${o.trackingCode||''}" placeholder="Mã VĐ..." class="w-full text-xs border border-gray-200 rounded px-2 py-2 uppercase outline-none focus:border-brand-500" onblur="updateField(${idx}, 'trackingCode', this.value)">${scanBtnMobile} ${trackBtnMobile}</div><input type="number" value="${o.shippingFee||''}" placeholder="Phí Hãng..." class="w-24 text-xs border border-red-100 bg-red-50 text-red-500 rounded px-2 py-2 outline-none focus:border-red-500" onblur="updateShip(${idx}, this.value)"></div>
                     <div class="flex gap-1 justify-end flex-wrap">${actionBtnsMobile}</div>
@@ -425,11 +450,10 @@
             const tb = document.getElementById('report-table'); tb.innerHTML = ''; 
             filtered.forEach(o => { 
                 let realIdx = orders.findIndex(x => x.id === o.id);
-                // Cập nhật final
                 let final = o.totalPrice - (o.discType === 'percent' ? o.totalPrice*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
                 
                 let ship = Number(o.shippingFee) || 0; 
-                let cm = o.refCode ? (o.totalPrice * configRate / 100) : 0; // Hoa hồng chỉ tính trên giá sản phẩm gốc
+                let cm = o.refCode ? (o.totalPrice * configRate / 100) : 0; 
                 let isDone = o.status === 'done'; let isReturned = o.status === 'returned';
                 let actualCm = isDone ? cm : 0; let net = isDone ? (final - actualCm - ship) : (isReturned ? -ship : 0);
                 
@@ -475,6 +499,11 @@
 
         function resetReport() { document.getElementById('filter-month').value=''; document.getElementById('filter-code').value=''; document.getElementById('filter-payment').value=''; runReport(); }
         
+        function resetSubmitBtn() {
+            const btn = document.getElementById('btn-submit-order');
+            if(btn) { btn.disabled = false; btn.innerHTML = 'Lưu Đơn'; }
+        }
+
         function addOrderItemRow(name='', qty=1, price='') {
             const container = document.getElementById('order-items-container');
             const row = document.createElement('div'); row.className = 'flex gap-2 items-center item-row';
@@ -490,35 +519,47 @@
         function openCreateModal() { 
             document.getElementById('form-order').reset(); document.querySelector('[name="orderIndex"]').value = -1; document.getElementById('modal-title').innerText = "Tạo Đơn Mới"; 
             document.getElementById('order-items-container').innerHTML = ''; addOrderItemRow(); 
+            resetSubmitBtn();
             document.getElementById('modal-order').classList.remove('hidden'); updateProdList(); calcPreview(); 
         }
 
         function openEditModal(idx) { 
             const o = orders[idx]; const f = document.getElementById('form-order'); 
-            f.orderIndex.value = idx; f.customerName.value = o.customerName; f.phone.value = o.phone; f.address.value = o.address; 
+            f.orderIndex.value = idx; 
+            f.pronoun.value = o.pronoun || 'Bạn';
+            f.customerName.value = o.customerName; f.phone.value = o.phone; f.address.value = o.address; 
             f.refCode.value = o.refCode || ''; f.shippingFee.value = o.shippingFee || 0; 
             f.customerShipFee.value = o.customerShipFee || 0;
             f.discVal.value = o.discVal; f.discType.value = o.discType; f.isCOD.checked = o.isCOD; 
             
             document.getElementById('order-items-container').innerHTML = '';
             o.items.forEach(i => addOrderItemRow(i.name, i.qty, i.price));
+            resetSubmitBtn();
             document.getElementById('modal-title').innerText = "Sửa Đơn Hàng"; document.getElementById('modal-order').classList.remove('hidden'); updateProdList(); calcPreview(); 
         }
 
         function closeModal() { document.getElementById('modal-order').classList.add('hidden'); }
         
         async function handleFormSubmit(e) { 
-            e.preventDefault(); const f = e.target; const idx = parseInt(f.orderIndex.value); 
+            e.preventDefault(); const f = e.target; 
+            
+            const submitBtn = document.getElementById('btn-submit-order');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Đang lưu...';
+
+            const idx = parseInt(f.orderIndex.value); 
             const itemRows = document.querySelectorAll('.item-row');
             let items = []; let totalPrice = 0;
             itemRows.forEach(row => {
                 const n = row.querySelector('.item-name').value.trim(); const q = parseInt(row.querySelector('.item-qty').value) || 1; const p = Number(row.querySelector('.item-price').value) || 0;
                 if(n) { items.push({name: n, qty: q, price: p}); totalPrice += (q * p); prodDb[n] = p; }
             });
-            if(items.length === 0) { alert('Vui lòng thêm ít nhất 1 sản phẩm!'); return; }
-            localStorage.setItem('tg_prods_v33', JSON.stringify(prodDb));
+            if(items.length === 0) { alert('Vui lòng thêm ít nhất 1 sản phẩm!'); resetSubmitBtn(); return; }
+            localStorage.setItem('tg_prods_v34', JSON.stringify(prodDb));
 
             const data = { 
+                pronoun: f.pronoun.value,
                 customerName: f.customerName.value, phone: f.phone.value, address: f.address.value, items: items, totalPrice: totalPrice, 
                 refCode: f.refCode.value.trim().toUpperCase(), shippingFee: Number(f.shippingFee.value) || 0, customerShipFee: Number(f.customerShipFee.value) || 0,
                 discVal: Number(f.discVal.value), discType: f.discType.value, isCOD: f.isCOD.checked, 
@@ -527,7 +568,10 @@
             
             if(idx === -1) { orders.unshift({ id: Date.now(), date: new Date().toISOString(), status: 'pending', trackingCode: '', isCommPaid: false, isMoneyCollected: false, ...data }); } 
             else { orders[idx] = { ...orders[idx], ...data }; } 
-            renderOrders(); closeModal(); await saveToCloud(); 
+            
+            closeModal();
+            renderOrders(); 
+            await saveToCloud(); 
         }
         
         async function updateField(idx, field, val) { if(!val && field==='trackingCode') return; orders[idx][field] = field === 'trackingCode' ? val.toUpperCase() : val; renderOrders(); await saveToCloud(); }
@@ -555,7 +599,7 @@
 
             let itemsHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><div style="flex:1; font-size:13px; font-weight:bold; padding-right:5px;">${i.qty}x ${i.name}</div><div style="font-size:13px; font-weight:bold;">${(i.qty * i.price).toLocaleString()}</div></div>`).join('');
 
-            w.document.write(`<html><head><title>In Tem Nhiệt 80mm</title><style>@page { margin: 2mm; size: 80mm auto; } body { font-family: sans-serif; margin: 0; padding: 0; color: #000; font-size: 12px; } .ticket { width: 76mm; padding: 2mm; box-sizing: border-box; border: 2px solid #000; border-radius: 4px; } .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 5px; margin-bottom: 8px; } .header h1 { margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase; } .to-block { margin-bottom: 8px; } .to-title { font-size: 11px; font-weight: bold; text-decoration: underline; } .name { font-size: 18px; font-weight: bold; margin-top: 2px; } .phone { font-size: 16px; font-weight: bold; } .address { font-size: 12px; margin-top: 4px; line-height: 1.3;} .prod-block { border-top: 2px dashed #000; padding-top: 5px; margin-bottom: 5px; } .cod-block { text-align: center; border-top: 2px dashed #000; padding-top: 8px; margin-top: 8px; } .cod-text { font-size: 20px; font-weight: bold; border: 3px solid #000; display: inline-block; padding: 4px 8px; margin-top: 4px;} .note { font-size: 10px; text-align: center; margin-top: 8px; font-style: italic; }</style></head><body><div class="ticket"><div class="header"><h1>tiệm giấy Thứ Ba</h1></div><div class="to-block"><div class="to-title">NGƯỜI NHẬN (TO):</div><div class="name">${o.customerName}</div><div class="phone">${o.phone}</div><div class="address">${o.address}</div></div><div class="prod-block"><div style="font-size: 11px; font-weight: bold; margin-bottom: 5px;">ĐƠN HÀNG:</div>${itemsHtml}${disc > 0 ? `<div style="display:flex; justify-content:space-between; font-size: 12px; border-top: 1px dotted #000; padding-top: 3px; margin-top: 3px;"><div>Giảm giá:</div><div>-${disc.toLocaleString()}</div></div>` : ''}${custShip > 0 ? `<div style="display:flex; justify-content:space-between; font-size: 12px; margin-top: 2px;"><div>Phí ship:</div><div>+${custShip.toLocaleString()}</div></div>` : ''}</div><div class="cod-block">${o.isCOD ? `<div style="font-weight:bold; font-size:14px;">THU HỘ (COD)</div><div class="cod-text">${final.toLocaleString('vi-VN')} đ</div>` : `<div class="cod-text" style="font-size:16px;">ĐÃ THANH TOÁN</div>`}${o.trackingCode ? `<div style="margin-top:8px; font-size:14px;">Mã VĐ: <b>${o.trackingCode}</b></div>` : ''}</div><div class="note">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></body></html>`);
+            w.document.write(`<html><head><title>In Tem Nhiệt 80mm</title><style>@page { margin: 2mm; size: 80mm auto; } body { font-family: sans-serif; margin: 0; padding: 0; color: #000; font-size: 12px; } .ticket { width: 76mm; padding: 2mm; box-sizing: border-box; border: 2px solid #000; border-radius: 4px; } .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 5px; margin-bottom: 8px; } .header h1 { margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase; } .to-block { margin-bottom: 8px; } .to-title { font-size: 11px; font-weight: bold; text-decoration: underline; } .name { font-size: 18px; font-weight: bold; margin-top: 2px; } .phone { font-size: 16px; font-weight: bold; } .address { font-size: 12px; margin-top: 4px; line-height: 1.3;} .prod-block { border-top: 2px dashed #000; padding-top: 5px; margin-bottom: 5px; } .cod-block { text-align: center; border-top: 2px dashed #000; padding-top: 8px; margin-top: 8px; } .cod-text { font-size: 20px; font-weight: bold; border: 3px solid #000; display: inline-block; padding: 4px 8px; margin-top: 4px;} .note { font-size: 10px; text-align: center; margin-top: 8px; font-style: italic; }</style></head><body><div class="ticket"><div class="header"><h1>Tiệm Giấy Thứ Ba</h1></div><div class="to-block"><div class="to-title">NGƯỜI NHẬN (TO):</div><div class="name">${o.customerName}</div><div class="phone">${o.phone}</div><div class="address">${o.address}</div></div><div class="prod-block"><div style="font-size: 11px; font-weight: bold; margin-bottom: 5px;">ĐƠN HÀNG:</div>${itemsHtml}${disc > 0 ? `<div style="display:flex; justify-content:space-between; font-size: 12px; border-top: 1px dotted #000; padding-top: 3px; margin-top: 3px;"><div>Giảm giá:</div><div>-${disc.toLocaleString()}</div></div>` : ''}${custShip > 0 ? `<div style="display:flex; justify-content:space-between; font-size: 12px; margin-top: 2px;"><div>Phí ship:</div><div>+${custShip.toLocaleString()}</div></div>` : ''}</div><div class="cod-block">${o.isCOD ? `<div style="font-weight:bold; font-size:14px;">THU HỘ (COD)</div><div class="cod-text">${final.toLocaleString('vi-VN')} đ</div>` : `<div class="cod-text" style="font-size:16px;">ĐÃ THANH TOÁN</div>`}${o.trackingCode ? `<div style="margin-top:8px; font-size:14px;">Mã VĐ: <b>${o.trackingCode}</b></div>` : ''}</div><div class="note">Cảm ơn bạn đã ủng hộ Tiệm!</div></div></body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
         }
 
@@ -572,8 +616,8 @@
             document.getElementById('preview-total').innerText = (Math.max(0, total-d) + custShip).toLocaleString('vi-VN') + ' ₫'; 
         }
         
-        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v33', configRate); alert('Đã lưu cấu hình!'); }
-        function clearCache() { localStorage.removeItem('tg_prods_v33'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
+        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v34', configRate); alert('Đã lưu cấu hình!'); }
+        function clearCache() { localStorage.removeItem('tg_prods_v34'); prodDb={}; alert('Đã xóa bộ nhớ giá!'); }
 
         // Start
         renderOrders();
