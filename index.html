@@ -498,10 +498,10 @@
                 let codBadge = o.isCOD ? (o.isMoneyCollected ? '<span class="text-xs font-bold text-blue-600 px-1 bg-blue-50 rounded">COD (Đã thu)</span>' : '<span class="text-xs font-bold text-orange-500 px-1 bg-orange-50 rounded">Thu COD</span>') : '<span class="text-xs font-bold text-green-500 px-1 bg-green-50 rounded">Đã CK</span>';
 
                 let actionBtns = `
-                    <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn Zalo"><i class="fa-solid fa-comment-dots"></i></button>
+                    <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="text-slate-400 hover:text-blue-600 transition" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="printOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In A5"><i class="fa-solid fa-print"></i></button>
-                    <button onclick="printThermalOrder(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Tem Nhiệt (80mm)"><i class="fa-solid fa-receipt"></i></button>
+                    <button onclick="printShippingLabel(${idx})" class="text-slate-400 hover:text-gray-800 transition" title="In Vận Đơn (Dán hộp A6)"><i class="fa-solid fa-box-open"></i></button>
+                    <button onclick="printInvoice(${idx})" class="text-slate-400 hover:text-brand-600 transition" title="In Hóa Đơn (Bỏ trong)"><i class="fa-solid fa-file-invoice"></i></button>
                     <button onclick="deleteOrder(${idx})" class="text-slate-400 hover:text-red-500 transition" title="Xóa"><i class="fa-solid fa-trash"></i></button>
                 `;
 
@@ -524,8 +524,8 @@
                 let actionBtnsMobile = `
                     <button onclick="copyMessage(${idx})" class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="printOrder(${idx})" class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fa-solid fa-print"></i></button>
-                    <button onclick="printThermalOrder(${idx})" class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fa-solid fa-receipt"></i></button>
+                    <button onclick="printShippingLabel(${idx})" class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fa-solid fa-box-open"></i></button>
+                    <button onclick="printInvoice(${idx})" class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center"><i class="fa-solid fa-file-invoice"></i></button>
                     <button onclick="deleteOrder(${idx})" class="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                 `;
 
@@ -698,77 +698,118 @@
         async function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); renderOrders(); await saveToCloud(); } }
         
         // IN A5
-        function printOrder(idx) { 
+        function printShippingLabel(idx) { 
             const o = orders[idx]; 
             let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
             
-            // Xây dựng danh sách sản phẩm in
+            // Chỉ hiển thị Số lượng và Tên sản phẩm để nhặt hàng
             let prodHtml = '';
             if(o.items && o.items.length > 0) {
-                prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-bottom: 3px;"><span>${i.qty}x ${i.name}</span></div>`).join('');
+                prodHtml = o.items.map(i => `<div style="padding: 4px 0; border-bottom: 1px dashed #ccc;"><b>[x${i.qty}]</b> ${i.name}</div>`).join('');
             } else {
-                prodHtml = `<div>${o.product}</div>`;
+                prodHtml = `<div><b>[x1]</b> ${o.product}</div>`;
             }
 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>In Vận Đơn A5</title><style>@page{size:auto;margin:5mm;}body{margin:0;padding:0;font-family:monospace;}.label{width:100%;border:2px solid #000;padding:5px;box-sizing:border-box;display:flex;flex-direction:column;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:10px;}.footer{margin-top:10px;text-align:center;}.cod-box{font-size:32px;font-weight:900;border:3px solid #000;padding:5px 10px;margin-top:5px;display:inline-block;}</style></head><body><div class="label"><div class="header"><img src="tachnen.jpg" style="width:50px;height:50px;object-fit:contain;"><div><h1 style="font-size:20px;font-weight:900;margin:0;line-height:1.2;">tiệm giấy Thứ Ba</h1></div></div><div class="content"><div style="margin-bottom:20px;"><span style="font-size:12px;font-weight:bold;text-decoration:underline;">NGƯỜI NHẬN (TO):</span><div style="font-size:18px;font-weight:bold;text-transform:uppercase;margin-top:5px;">${o.customerName}</div><div style="font-size:16px;font-weight:bold;margin-top:2px;">${o.phone}</div><div style="font-size:15px;margin-top:5px;line-height:1.4;">${o.address}</div></div><div style="border-top:1px dashed #000;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">Nội dung hàng:</span><div style="font-size:14px;margin-top:5px;">${prodHtml}</div></div></div><div class="footer">${o.isCOD?`<div style="font-weight:bold;font-size:14px;">THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} đ</div>`:`<div style="border:2px double #000;padding:10px;font-size:20px;font-weight:bold;">ĐÃ THANH TOÁN</div>`}${o.trackingCode?`<div style="margin-top:10px;font-size:12px;">Vận đơn: <b>${o.trackingCode}</b></div>`:''} <div style="font-size:10px;margin-top:10px;font-style:italic;">Cảm ơn ${o.salutation ? o.salutation.toLowerCase() : 'bạn'} đã ủng hộ Tiệm!</div></div></div></body></html>`); 
-            w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
-        }
-
-        // IN TEM NHIỆT (80mm)
-        function printThermalOrder(idx) {
-            const o = orders[idx]; 
-            let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
-            
-            let prodHtml = '';
-            if(o.items && o.items.length > 0) {
-                prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-top: 3px;"><span>${i.qty}x ${i.name}</span><span style="font-weight:normal;">${(i.qty * i.price).toLocaleString()}</span></div>`).join('');
-            } else {
-                prodHtml = `<div class="prod-name">${o.product}</div>`;
-            }
-
-            let cShipHtml = o.customerShipFee ? `<div style="display:flex; justify-content:space-between; margin-top: 5px; font-style:italic;"><span>+ Phí ship</span><span>${Number(o.customerShipFee).toLocaleString()}</span></div>` : '';
-            let discHtml = o.discVal ? `<div style="display:flex; justify-content:space-between; margin-top: 2px; font-style:italic;"><span>- Giảm giá</span><span>-${(o.discType==='percent' ? o.price*(o.discVal/100) : o.discVal).toLocaleString()}</span></div>` : '';
-
-            const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>In Tem Nhiệt 80mm</title><style>
-                @page { margin: 2mm; size: 80mm auto; }
-                body { font-family: sans-serif; margin: 0; padding: 0; color: #000; font-size: 12px; }
-                .ticket { width: 76mm; padding: 2mm; box-sizing: border-box; border: 2px solid #000; border-radius: 4px; }
-                .header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 5px; margin-bottom: 8px; }
-                .header h1 { margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase; }
-                .to-block { margin-bottom: 8px; }
-                .to-title { font-size: 11px; font-weight: bold; text-decoration: underline; }
-                .name { font-size: 18px; font-weight: bold; margin-top: 2px; }
-                .phone { font-size: 16px; font-weight: bold; }
-                .address { font-size: 12px; margin-top: 4px; line-height: 1.3;}
-                .prod-block { border-top: 2px dashed #000; padding-top: 5px; margin-bottom: 5px; }
-                .prod-name { font-size: 14px; font-weight: bold; margin-top: 2px;}
-                .cod-block { text-align: center; border-top: 2px dashed #000; padding-top: 8px; margin-top: 8px; }
-                .cod-text { font-size: 20px; font-weight: bold; border: 3px solid #000; display: inline-block; padding: 4px 8px; margin-top: 4px;}
-                .note { font-size: 10px; text-align: center; margin-top: 8px; font-style: italic; }
+            w.document.write(`<html><head><title>Vận Đơn Tiệm giấy Thứ Ba</title><style>
+                @page { margin: 0; size: 100mm 150mm; }
+                body { font-family: sans-serif; margin: 0; padding: 5mm; color: #000; box-sizing: border-box; }
+                .box { border: 2px solid #000; height: 100%; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; border-radius: 8px;}
+                .header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+                .title { font-size: 24px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
+                .receiver { margin-bottom: 15px; }
+                .r-title { font-size: 14px; font-weight: bold; background: #000; color: #fff; display: inline-block; padding: 4px 10px; border-radius: 4px; margin-bottom: 8px;}
+                .name { font-size: 22px; font-weight: bold; text-transform: uppercase;}
+                .phone { font-size: 20px; font-weight: bold; margin: 5px 0;}
+                .address { font-size: 16px; line-height: 1.4; }
+                .items { border-top: 2px dashed #000; padding-top: 10px; flex-grow: 1;}
+                .items-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+                .item-list { font-size: 16px; }
+                .footer { border-top: 3px solid #000; padding-top: 15px; text-align: center; }
+                .cod-box { border: 4px solid #000; padding: 10px; font-size: 30px; font-weight: 900; margin-top: 10px; background: #f0f0f0;}
+                .paid-box { border: 4px solid #000; padding: 10px; font-size: 24px; font-weight: 900; margin-top: 10px; }
             </style></head><body>
-            <div class="ticket">
-                <div class="header"><h1>tiệm giấy Thứ Ba</h1></div>
-                <div class="to-block">
-                    <div class="to-title">NGƯỜI NHẬN (TO):</div>
+            <div class="box">
+                <div class="header"><div class="title">tiệm giấy Thứ Ba</div></div>
+                <div class="receiver">
+                    <div class="r-title">ĐẾN (TO):</div>
                     <div class="name">${o.customerName}</div>
                     <div class="phone">${o.phone}</div>
                     <div class="address">${o.address}</div>
                 </div>
-                <div class="prod-block">
-                    <div><b>Nội dung hàng:</b></div>
-                    <div class="prod-name">
-                        ${prodHtml}
-                        ${discHtml}
-                        ${cShipHtml}
-                    </div>
+                <div class="items">
+                    <div class="items-title">Ghi chú hàng hóa:</div>
+                    <div class="item-list">${prodHtml}</div>
                 </div>
-                <div class="cod-block">
-                    ${o.isCOD ? `<div style="font-weight:bold; font-size:14px;">THU HỘ (COD)</div><div class="cod-text">${final.toLocaleString('vi-VN')} đ</div>` : `<div class="cod-text" style="font-size:16px;">ĐÃ THANH TOÁN</div>`}
-                    ${o.trackingCode ? `<div style="margin-top:8px; font-size:14px;">Mã VĐ: <b>${o.trackingCode}</b></div>` : ''}
+                <div class="footer">
+                    ${o.isCOD ? `<div style="font-size:16px; font-weight:bold;">TIỀN THU HỘ (COD)</div><div class="cod-box">${final.toLocaleString('vi-VN')} VNĐ</div>` : `<div class="paid-box">ĐÃ THANH TOÁN (NO COD)</div>`}
+                    ${o.trackingCode ? `<div style="margin-top:15px; font-size:16px;">Mã Vận Đơn: <b>${o.trackingCode}</b></div>` : ''}
                 </div>
-                <div class="note">Cảm ơn ${o.salutation ? o.salutation.toLowerCase() : 'bạn'} đã ủng hộ Tiệm!</div>
+            </div>
+            </body></html>`); 
+            w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
+        }
+
+        // IN TEM NHIỆT (80mm)
+        function printInvoice(idx) {
+            const o = orders[idx]; 
+            let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
+            let dXung = o.salutation ? o.salutation : 'bạn';
+            
+            // Chi tiết giá từng món
+            let prodHtml = '';
+            if(o.items && o.items.length > 0) {
+                prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>${i.qty} x ${i.name}</span><span style="font-weight:bold;">${(i.qty * i.price).toLocaleString()}</span></div>`).join('');
+            } else {
+                prodHtml = `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>1 x ${o.product}</span><span style="font-weight:bold;">${(o.price).toLocaleString()}</span></div>`;
+            }
+
+            let cShipHtml = o.customerShipFee ? `<div style="display:flex; justify-content:space-between; margin-top: 8px; font-size: 12px; color: #333;"><span>Phí ship</span><span>${Number(o.customerShipFee).toLocaleString()}</span></div>` : '';
+            let discValCalc = o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal;
+            let discHtml = o.discVal ? `<div style="display:flex; justify-content:space-between; margin-top: 4px; font-size: 12px; color: #333;"><span>Ưu đãi xíu xiu</span><span>-${discValCalc.toLocaleString()}</span></div>` : '';
+
+            const w = window.open('', '_blank'); 
+            w.document.write(`<html><head><title>Hóa Đơn Tiệm</title><style>
+                @page { margin: 0; size: 80mm auto; }
+                @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+                body { font-family: 'Lora', serif; margin: 0; padding: 4mm; color: #2c2c2c; background: #fff; }
+                .receipt { width: 72mm; padding: 2mm; box-sizing: border-box; }
+                .logo-text { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 2px; }
+                .sub-text { text-align: center; font-size: 11px; font-style: italic; color: #555; margin-bottom: 15px; }
+                .divider { border-bottom: 1px dashed #aaa; margin: 12px 0; }
+                .info { font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+                .total-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #000; font-size: 16px; font-weight: 600; }
+                .thank-you { text-align: center; margin-top: 25px; font-size: 12px; line-height: 1.6; font-style: italic; color: #444; }
+                .wabi-sabi { display: inline-block; padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px; margin-top: 10px; font-size: 10px; letter-spacing: 1px; }
+            </style></head><body>
+            <div class="receipt">
+                <div class="logo-text">tiệm giấy Thứ Ba</div>
+                <div class="sub-text">Mộc mạc & An yên</div>
+                
+                <div class="info">
+                    <div>Thân gửi: <b>${dXung} ${o.customerName}</b></div>
+                    <div>Ngày gửi: ${new Date(o.date).toLocaleDateString('vi-VN')}</div>
+                </div>
+
+                <div class="divider"></div>
+                <div style="font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Món đồ đã chọn</div>
+                
+                ${prodHtml}
+                ${cShipHtml}
+                ${discHtml}
+                
+                <div class="total-row">
+                    <span>Tổng cộng:</span>
+                    <span>${final.toLocaleString()} ₫</span>
+                </div>
+
+                <div class="thank-you">
+                    "Mỗi mẻ giấy, mỗi chi tiết đều mang vẻ đẹp của sự không hoàn hảo. Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${dXung.toLowerCase()} một chút niềm vui trong ngày."
+                    <br><br>
+                    Cảm ơn ${dXung.toLowerCase()} thật nhiều!
+                    <br>
+                    <div class="wabi-sabi">WABI - SABI</div>
+                </div>
             </div>
             </body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
