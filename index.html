@@ -91,7 +91,7 @@
                                     <th class="p-4 w-28">Ngày</th>
                                     <th class="p-4 w-56">Khách hàng</th>
                                     <th class="p-4">Sản phẩm</th>
-                                    <th class="p-4 w-48 text-center">Vận Đơn & Phí Ship (Tiệm)</th>
+                                    <th class="p-4 w-48 text-center">Vận đơn & Phí ship</th>
                                     <th class="p-4 w-32 text-center">Trạng thái</th>
                                     <th class="p-4 w-40 text-center">Thao tác</th>
                                 </tr>
@@ -105,7 +105,7 @@
             </div>
 
             <div id="tab-reports" class="tab-content hidden flex-1 overflow-y-auto p-4 md:p-8 pb-32">
-                <h2 class="font-bold text-xl md:text-2xl text-slate-800 mb-4 md:mb-6">Báo Cáo Doanh Thu & COD</h2>
+                <h2 class="font-bold text-xl md:text-2xl text-slate-800 mb-4 md:mb-6">Báo cáo doanh thu & COD</h2>
                 
                 <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
                     <div class="flex flex-col md:flex-row gap-4 items-end">
@@ -341,7 +341,7 @@
             if (o.items && o.items.length > 0) { dsSanPham = o.items.map(i => `${i.qty} ${i.name}`).join(', '); }
             let paymentWarning = o.isCOD ? "Lưu ý giúp Tiệm là mình **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : "Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
             let trackInfo = o.trackingCode ? `Mã vận đơn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
-            let msg = `Dạ tiệm giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã thương mến và ủng hộ tiệm giấy Thứ Ba! Chúc ${danhXung} một ngày thật an lành!`;
+            let msg = `Dạ tiệm giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã ủng hộ Tiệm! Chúc ${danhXung} một ngày thật an lành!`;
             
             navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn Zalo/Mess', 'success'); }).catch(err => { alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg); });
         }
@@ -598,7 +598,7 @@
             </style></head><body>
             <div class="receipt">
                 <div class="logo-text">tiệm giấy Thứ Ba</div>
-                <div class="sub-text">Mộc mạc & An yên</div>
+                <div class="sub-text">tái chế giấy cùng Tiệm nhé!</div>
                 
                 <div class="info">
                     <div>Thân gửi: <b>${dXung} ${o.customerName}</b></div>
