@@ -340,7 +340,7 @@
             let dsSanPham = o.product;
             if (o.items && o.items.length > 0) { dsSanPham = o.items.map(i => `${i.qty} ${i.name}`).join(', '); }
             let paymentWarning = o.isCOD ? "Lưu ý giúp Tiệm là mình **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : "Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
-            let trackInfo = o.trackingCode ? `Mã vận đơn là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
+            let trackInfo = o.trackingCode ? `Mã vận đơn Vietnampost là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
             let msg = `Dạ tiệm giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã ủng hộ Tiệm! Chúc ${danhXung} một ngày thật an lành!`;
             
             navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn Zalo/Mess', 'success'); }).catch(err => { alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg); });
