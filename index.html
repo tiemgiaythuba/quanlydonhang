@@ -66,7 +66,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 32.1 (Full Print)</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 32.1 (Smooth Sync)</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -382,6 +382,16 @@
             revChart = new Chart(ctx, { type: 'bar', data: { labels: labels.length ? labels : ['Chưa có DL'], datasets: [{ label: 'Thực thu (₫)', data: data.length ? data : [0], backgroundColor: '#ea580c', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
         }
 
+        // --- CƠ CHẾ ĐỒNG BỘ MƯỢT NGẦM (DEBOUNCE) ---
+        let syncTimeout = null;
+        function queueCloudSave() {
+            showStatus("Đang chờ lưu...", "loading");
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(() => {
+                saveToCloud();
+            }, 2500); // Sau 2.5s không thao tác sẽ lưu
+        }
+
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
         async function syncData() {
             if(!API_URL) return; showStatus("Đồng bộ...", "loading");
@@ -400,10 +410,40 @@
             try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(orders) }); showStatus("Đã lưu", "success"); } catch (err) { showStatus("Lỗi mạng", "error"); }
         }
 
-        async function updateShip(idx, val) { orders[idx].shippingFee = Number(val); await saveToCloud(); runReport(); }
-        async function toggleMoney(idx, isCollected) { orders[idx].isMoneyCollected = isCollected; await saveToCloud(); runReport(); renderOrders(); }
-        async function toggleComm(idx, isPaid) { orders[idx].isCommPaid = isPaid; await saveToCloud(); runReport(); }
+        function updateShip(idx, val) { 
+            orders[idx].shippingFee = Number(val); 
+            localStorage.setItem('tg_orders_v31', JSON.stringify(orders)); 
+            runReport(); 
+            queueCloudSave(); 
+        }
+        function toggleMoney(idx, isCollected) { 
+            orders[idx].isMoneyCollected = isCollected; 
+            localStorage.setItem('tg_orders_v31', JSON.stringify(orders)); 
+            runReport(); 
+            queueCloudSave(); 
+        }
+        function toggleComm(idx, isPaid) { 
+            orders[idx].isCommPaid = isPaid; 
+            localStorage.setItem('tg_orders_v31', JSON.stringify(orders)); 
+            runReport(); 
+            queueCloudSave(); 
+        }
+        function updateField(idx, field, val) { 
+            if(!val && field==='trackingCode') return; 
+            orders[idx][field] = field === 'trackingCode' ? val.toUpperCase() : val; 
+            localStorage.setItem('tg_orders_v31', JSON.stringify(orders));
+            if (field === 'status') { renderOrders(); runReport(); }
+            queueCloudSave(); 
+        }
+        function deleteOrder(idx) { 
+            if(confirm('Xóa đơn này?')) { 
+                orders.splice(idx, 1); 
+                localStorage.setItem('tg_orders_v31', JSON.stringify(orders)); 
+                renderOrders(); runReport(); queueCloudSave(); 
+            } 
+        }
 
+        // RENDER ORDERS
         function renderOrders() {
             const d = document.getElementById('order-list-desktop'); const m = document.getElementById('order-list-mobile');
             d.innerHTML = ''; m.innerHTML = '';
@@ -426,7 +466,6 @@
                 let scanBtn = `<button onclick="startScan(${idx})" class="bg-slate-100 text-slate-600 px-2 rounded border border-slate-200 hover:bg-slate-200 transition" title="Quét mã vạch"><i class="fa-solid fa-qrcode"></i></button>`;
                 let codBadge = o.isCOD ? (o.isMoneyCollected ? '<span class="text-xs font-bold text-blue-600 px-1 bg-blue-50 rounded">COD (Đã thu)</span>' : '<span class="text-xs font-bold text-orange-500 px-1 bg-orange-50 rounded">Thu COD</span>') : '<span class="text-xs font-bold text-green-500 px-1 bg-green-50 rounded">Đã CK</span>';
 
-                // NÚT BẤM CẬP NHẬT GỌI ĐÚNG printOrder (A6) và printInvoice (80mm)
                 let actionBtns = `
                     <button onclick="copyMessage(${idx})" class="text-green-500 hover:text-green-600 transition" title="Copy tin nhắn"><i class="fa-solid fa-comment-dots"></i></button>
                     <button onclick="openEditModal(${idx})" class="text-slate-400 hover:text-blue-600 transition" title="Sửa"><i class="fa-solid fa-pen"></i></button>
@@ -489,10 +528,12 @@
 
                 let commCheck = actualCm > 0 ? `<input type="checkbox" class="comm-check w-4 h-4 accent-purple-600" ${o.isCommPaid?'checked':''} onchange="toggleComm(${realIdx}, this.checked)">` : '-';
                 let codCheck = o.isCOD ? `<input type="checkbox" class="cod-check w-4 h-4 accent-blue-600" ${o.isMoneyCollected?'checked':''} onchange="toggleMoney(${realIdx}, this.checked)" title="Đã thu tiền từ shipper">` : '<span class="text-[10px] text-gray-400">Đã CK</span>';
+                
                 let netDisplay = isDone ? `<span class="text-brand-600 font-bold">${net.toLocaleString()}</span>` : (isReturned ? `<span class="text-red-500 font-bold">${net.toLocaleString()}</span>` : `<span class="text-[10px] text-gray-400">Chờ Xong</span>`);
 
                 tb.innerHTML += `<tr class="${(!isDone && !isReturned) ? 'opacity-70' : ''}"><td class="p-3 text-gray-500 text-xs">${new Date(o.date).toLocaleDateString('vi-VN')}</td><td class="p-3 text-sm"><div class="font-bold">${o.customerName}</div><div class="text-xs text-gray-500">${o.trackingCode || ''}</div><div class="text-[10px] text-purple-600 font-bold mt-1">${o.refCode||''}</div></td><td class="p-3 text-right text-sm font-medium">${final.toLocaleString()}</td><td class="p-3 text-center bg-blue-50">${codCheck}</td><td class="p-3 text-right text-sm text-gray-700">${actualCm > 0 ? actualCm.toLocaleString() : '-'}</td><td class="p-3 text-center bg-purple-50">${commCheck}</td><td class="p-3 text-right text-sm text-red-400">${ship > 0 ? ship.toLocaleString() : '-'}</td><td class="p-3 text-right">${netDisplay}</td></tr>`; 
             }); 
+            
             document.getElementById('report-rev').innerText = rev.toLocaleString() + ' ₫'; document.getElementById('report-comm-total').innerText = commTotal.toLocaleString() + ' ₫'; document.getElementById('report-comm-debt').innerText = commDebt.toLocaleString() + ' ₫'; document.getElementById('report-ship').innerText = totalShip.toLocaleString() + ' ₫'; document.getElementById('report-count').innerText = filtered.length; document.getElementById('report-cod-collected').innerText = codCollectedTotal.toLocaleString() + ' ₫'; document.getElementById('report-cod-pending').innerText = codPendingTotal.toLocaleString() + ' ₫'; 
         }
 
@@ -536,7 +577,7 @@
         
         function closeModal() { document.getElementById('modal-order').classList.add('hidden'); }
         
-        async function handleFormSubmit(e) { 
+        function handleFormSubmit(e) { 
             e.preventDefault(); const f = e.target; const idx = parseInt(f.orderIndex.value); 
             let items = []; let totalItemsPrice = 0; let productNames = [];
             document.querySelectorAll('.prod-row').forEach(row => {
@@ -551,11 +592,10 @@
                 refCode: f.refCode.value.trim().toUpperCase(), shippingFee: Number(f.shippingFee.value) || 0, discVal: Number(f.discVal.value) || 0, discType: f.discType.value, isCOD: f.isCOD.checked, isCommPaid: idx !== -1 ? orders[idx].isCommPaid : false, isMoneyCollected: idx !== -1 ? orders[idx].isMoneyCollected : false 
             }; 
             if(idx === -1) { orders.unshift({ id: Date.now(), date: new Date().toISOString(), status: 'pending', trackingCode: '', ...data }); } else { orders[idx] = { ...orders[idx], ...data }; } 
-            renderOrders(); closeModal(); await saveToCloud(); 
+            
+            localStorage.setItem('tg_orders_v31', JSON.stringify(orders));
+            renderOrders(); runReport(); closeModal(); queueCloudSave(); 
         }
-        
-        async function updateField(idx, field, val) { if(!val && field==='trackingCode') return; orders[idx][field] = field === 'trackingCode' ? val.toUpperCase() : val; renderOrders(); await saveToCloud(); }
-        async function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); renderOrders(); await saveToCloud(); } }
         
         // --- 1. IN VẬN ĐƠN DÁN HỘP (A6 - MONOSPACE - LOGO) ---
         function printOrder(idx) { 
