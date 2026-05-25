@@ -34,12 +34,10 @@
         .comm-check { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
         .cod-check { width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb; }
         .prod-row { transition: all 0.2s; }
-        #sync-status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(30, 41, 59, 0.95); color: white; padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: max-content; transition: all 0.3s; }
     </style>
 </head>
 <body class="text-slate-800 h-screen overflow-hidden">
 
-    <div id="sync-status" class="hidden"><i class="fa-solid fa-circle-check text-green-400"></i><span id="sync-text">Sẵn sàng</span></div>
     <button onclick="openCreateModal()" class="fab-btn md:hidden"><i class="fa-solid fa-plus"></i></button>
 
     <div id="app-container" class="flex h-full flex-col md:flex-row">
@@ -343,10 +341,10 @@
             let dsSanPham = o.product;
             if (o.items && o.items.length > 0) { dsSanPham = o.items.map(i => `${i.qty} ${i.name}`).join(', '); }
             let paymentWarning = o.isCOD ? "Lưu ý giúp Tiệm là mình **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé." : "Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.";
-            let trackInfo = o.trackingCode ? `Mã vận đơn của ${danhXung} là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
-            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã thương mến và ủng hộ Tiệm! Chúc ${danhXung} một ngày thật an lành!`;
+            let trackInfo = o.trackingCode ? `Mã vận đơn Vietnampost của ${danhXung} là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${danhXung} sớm nha.`;
+            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${danhXung} ${o.customerName} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${danhXung} rồi nha. ${trackInfo}\n\n⚠️ ${paymentWarning}\n\nNhận được hàng, ${danhXung} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${danhXung} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${danhXung} đã ủng hộ Tiệm! Chúc ${danhXung} một ngày thật vui vẻ!`;
             
-            navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn Zalo', 'success'); }).catch(err => { alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg); });
+            navigator.clipboard.writeText(msg).then(() => { showStatus('Đã copy tin nhắn', 'success'); }).catch(err => { alert("Không thể copy tự động. Bạn copy thủ công nhé:\n\n" + msg); });
         }
 
         function trackOrder(code) { 
