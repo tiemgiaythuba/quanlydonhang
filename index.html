@@ -76,7 +76,8 @@
                         <h2 class="font-bold text-xl text-slate-800 hidden md:block">Quản lý đơn</h2>
                         <div class="relative w-full md:w-64">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="search-input" oninput="renderOrders()" placeholder="Tìm tên, sđt, mã, SP..." class="w-full border border-gray-300 rounded-full py-2 pl-9 pr-4 text-sm bg-gray-50 focus:bg-white outline-none focus:border-brand-500 transition">
+                            <input type="text" id="search-input" oninput="renderOrders(); toggleClearBtn()" placeholder="Tìm tên, sđt, mã, SP..." class="w-full border border-gray-300 rounded-full py-2 pl-9 pr-8 text-sm bg-gray-50 focus:bg-white outline-none focus:border-brand-500 transition">
+                            <button id="clear-search-btn" onclick="clearSearch()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 hidden transition"><i class="fa-solid fa-circle-xmark"></i></button>
                         </div>
                         <button onclick="syncData()" class="text-xs bg-blue-50 text-blue-600 px-3 py-2 rounded-full hover:bg-blue-100 transition font-bold border border-blue-200 whitespace-nowrap"><i class="fa-solid fa-rotate"></i> Tải dữ liệu</button>
                     </div>
@@ -486,12 +487,14 @@
             document.getElementById('empty-state').classList.add('hidden');
 
             let sorted = [...orders].sort((a,b) => new Date(b.date) - new Date(a.date));
-            sorted = sorted.filter(o => 
-                String(o.customerName || '').toLowerCase().includes(search) || 
-                String(o.phone || '').includes(search) || 
-                String(o.trackingCode || '').toLowerCase().includes(search) ||
-                String(o.product || '').toLowerCase().includes(search)
-            );
+            sorted = sorted.filter(o => {
+                let pPhone = String(o.phone || '');
+                if (pPhone.length >= 9 && !pPhone.startsWith('0')) pPhone = '0' + pPhone;
+                return String(o.customerName || '').toLowerCase().includes(search) || 
+                       pPhone.includes(search) || 
+                       String(o.trackingCode || '').toLowerCase().includes(search) ||
+                       String(o.product || '').toLowerCase().includes(search);
+            });
 
             let dHtml = ''; let mHtml = '';
 
@@ -662,7 +665,18 @@
 
         function updateProdList() { const dl = document.getElementById('prod-list'); dl.innerHTML = ''; Object.keys(prodDb).forEach(k => dl.innerHTML += `<option value="${k}">`); }
         function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v38', configRate); alert('Đã lưu cấu hình!'); }
+        function toggleClearBtn() {
+            const input = document.getElementById('search-input');
+            const btn = document.getElementById('clear-search-btn');
+            if (input.value.length > 0) btn.classList.remove('hidden');
+            else btn.classList.add('hidden');
+        }
         
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            toggleClearBtn();
+            renderOrders();
+        }
         renderOrders(); syncData();
     </script>
     <script>
