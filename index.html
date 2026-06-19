@@ -66,7 +66,7 @@
                 <button onclick="switchTab('reports')" id="btn-reports" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-chart-pie w-6 text-center text-lg"></i><span>Thống Kê</span></button>
                 <button onclick="switchTab('settings')" id="btn-settings" class="nav-item w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-sliders w-6 text-center text-lg"></i><span>Cấu Hình</span></button>
             </nav>
-            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 37.3 (Pure Pull Sync)</div>
+            <div class="p-6 text-xs text-slate-600 text-center border-t border-slate-800 mt-auto">Ver 38.0 (Perfect Sync)</div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative h-full overflow-hidden">
@@ -264,13 +264,13 @@
         let API_URL = localStorage.getItem('tg_api_url') || DEFAULT_API_URL;
         document.getElementById('api-url-input').value = API_URL;
 
-        let orders = JSON.parse(localStorage.getItem('tg_orders_v373'));
+        let orders = JSON.parse(localStorage.getItem('tg_orders_v38'));
         if (!orders) {
-            orders = JSON.parse(localStorage.getItem('tg_orders_v372')) || JSON.parse(localStorage.getItem('tg_orders_v37')) || JSON.parse(localStorage.getItem('tg_orders_v368')) || [];
-            if(orders.length > 0) localStorage.setItem('tg_orders_v373', JSON.stringify(orders));
+            orders = JSON.parse(localStorage.getItem('tg_orders_v372')) || JSON.parse(localStorage.getItem('tg_orders_v371')) || JSON.parse(localStorage.getItem('tg_orders_v37')) || [];
+            if(orders.length > 0) localStorage.setItem('tg_orders_v38', JSON.stringify(orders));
         }
-        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v373')) || JSON.parse(localStorage.getItem('tg_prods_v372')) || {};
-        let configRate = localStorage.getItem('tg_rate_v373') || localStorage.getItem('tg_rate_v372') || 10;
+        let prodDb = JSON.parse(localStorage.getItem('tg_prods_v38')) || {};
+        let configRate = localStorage.getItem('tg_rate_v38') || 10;
         document.getElementById('config-rate').value = configRate;
 
         function showStatus(msg, type='loading') {
@@ -291,7 +291,7 @@
             if(id==='reports') runReport();
         }
 
-        // TỰ ĐỘNG ĐIỀN KHÁCH HÀNG THÔNG MINH (ÉP CHUỖI, BÙ SỐ 0, ƯU TIÊN ĐƠN MỚI NHẤT)
+        // TỰ ĐỘNG ĐIỀN KHÁCH HÀNG THÔNG MINH (BÙ SỐ 0, ƯU TIÊN ĐƠN MỚI NHẤT)
         function autoFillCRM(phone) {
             if(!phone) return; 
             const searchPhone = String(phone).replace(/[^0-9]/g, '');
@@ -336,7 +336,7 @@
         function copyMessage(idx) {
             const o = orders[idx]; let p = String(o.salutation || 'Bạn').toLowerCase(); 
             let dsSanPham = o.product || (o.items && o.items.length > 0 ? o.items.map(i => `${i.qty} ${i.name}`).join(', ') : 'Sản phẩm');
-            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${p} ${o.customerName || ''} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${p} rồi nha. ${o.trackingCode ? `Mã vận đơn của ${p} là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn and sẽ cập nhật mã vận đơn cho ${p} sớm nha.`}\n\n⚠️ ${o.isCOD ? `${p} lưu ý **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé.` : `Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.`}\n\nNhận được hàng, ${p} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${p} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${p} đã thương mến và ủng hộ Tiệm! Chúc ${p} một ngày thật an lành!`;
+            let msg = `Dạ Tiệm Giấy Thứ Ba chào ${p} ${o.customerName || ''} ạ,\n\nTiệm đã gói ghém cẩn thận và gửi đơn [${dsSanPham}] cho ${p} rồi nha. ${o.trackingCode ? `Mã vận đơn của ${p} là: ${o.trackingCode}.` : `Tiệm đang chuẩn bị đơn và sẽ cập nhật mã vận đơn cho ${p} sớm nha.`}\n\n⚠️ ${o.isCOD ? `${p} lưu ý **chỉ thanh toán đúng số tiền khi nhận hàng** để tránh giả mạo shipper lừa đảo nhé.` : `Đơn hàng của mình đã được thanh toán trước, nên mình **chỉ nhận hàng và tuyệt đối không thanh toán thêm** bất kỳ khoản nào để tránh giả mạo shipper lừa đảo nhé.`}\n\nNhận được hàng, ${p} giúp Tiệm quay lại video mở hộp, để lỡ có sự cố gì trong lúc vận chuyển Tiệm sẽ hỗ trợ ${p} kịp thời và chu đáo nhất ạ.\n\nCảm ơn ${p} đã thương mến và ủng hộ Tiệm! Chúc ${p} một ngày thật an lành!`;
             navigator.clipboard.writeText(msg).then(() => showStatus('Đã copy tin nhắn', 'success')).catch(err => alert("Không thể copy:\n\n" + msg));
         }
 
@@ -379,7 +379,7 @@
 
         function saveApiUrl() { API_URL = document.getElementById('api-url-input').value.trim(); localStorage.setItem('tg_api_url', API_URL); alert("Đã lưu Link!"); syncData(); }
         
-        // ĐÃ FIX TRIỆT ĐỂ: LOẠI BỎ KHỐI LỆNH POST AUTO TRONG HÀM SYNC - ĐỒNG BỘ 1 CHIỀU AN TOÀN TRUYỆT ĐỐI
+        // ĐỒNG BỘ 1 CHIỀU TUYỆT ĐỐI AN TOÀN - ĐÃ FIXED KHÓA LƯU V38
         async function syncData() {
             if(!API_URL) return; showStatus("Đang tải dữ liệu...", "loading");
             try {
@@ -394,14 +394,14 @@
                 const data = JSON.parse(text);
                 if (data && Array.isArray(data)) {
                     orders = data; 
-                    localStorage.setItem('tg_orders_v373', JSON.stringify(orders));
+                    localStorage.setItem('tg_orders_v38', JSON.stringify(orders));
                     renderOrders(); try { runReport(); } catch(e) {} showStatus("Đã cập nhật", "success");
                 }
             } catch (err) { showStatus("Lỗi kết nối", "error"); alert("Đường truyền bị đứt hoặc bị tiện ích chặn quảng cáo chặn.\nChi tiết: " + err.message); }
         }
         
         async function saveToCloud() {
-            localStorage.setItem('tg_orders_v373', JSON.stringify(orders));
+            localStorage.setItem('tg_orders_v38', JSON.stringify(orders));
             if(!API_URL || orders.length === 0) return; 
             try { 
                 await fetch(API_URL.trim(), { 
@@ -413,14 +413,14 @@
             } catch (err) { showStatus("Lỗi mạng", "error"); }
         }
 
-        function updateShip(idx, val) { orders[idx].shippingFee = Number(val); localStorage.setItem('tg_orders_v373', JSON.stringify(orders)); queueCloudSave(); }
-        function toggleMoney(idx, isCollected) { orders[idx].isMoneyCollected = isCollected; localStorage.setItem('tg_orders_v373', JSON.stringify(orders)); setTimeout(() => { try{runReport();}catch(e){} }, 50); queueCloudSave(); }
-        function toggleComm(idx, isPaid) { orders[idx].isCommPaid = isPaid; localStorage.setItem('tg_orders_v373', JSON.stringify(orders)); setTimeout(() => { try{runReport();}catch(e){} }, 50); queueCloudSave(); }
+        function updateShip(idx, val) { orders[idx].shippingFee = Number(val); localStorage.setItem('tg_orders_v38', JSON.stringify(orders)); queueCloudSave(); }
+        function toggleMoney(idx, isCollected) { orders[idx].isMoneyCollected = isCollected; localStorage.setItem('tg_orders_v38', JSON.stringify(orders)); setTimeout(() => { try{runReport();}catch(e){} }, 50); queueCloudSave(); }
+        function toggleComm(idx, isPaid) { orders[idx].isCommPaid = isPaid; localStorage.setItem('tg_orders_v38', JSON.stringify(orders)); setTimeout(() => { try{runReport();}catch(e){} }, 50); queueCloudSave(); }
         
         function updateField(idx, field, val, elem = null) { 
             if(!val && field==='trackingCode') return; 
             orders[idx][field] = field === 'trackingCode' ? String(val).toUpperCase() : val; 
-            localStorage.setItem('tg_orders_v373', JSON.stringify(orders));
+            localStorage.setItem('tg_orders_v38', JSON.stringify(orders));
             if (field === 'status') {
                 let stColor = val==='shipping' ? 'text-yellow-600 bg-yellow-50' : (val==='done' ? 'text-green-600 bg-green-50' : (val==='returned' ? 'text-red-600 bg-red-50' : 'text-gray-600 bg-gray-100'));
                 if (elem) elem.className = `text-xs py-1 px-2 rounded border font-bold outline-none ${stColor}`;
@@ -428,9 +428,9 @@
             queueCloudSave(); 
         }
         
-        function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); localStorage.setItem('tg_orders_v373', JSON.stringify(orders)); renderOrders(); try{runReport();}catch(e){} queueCloudSave(); } }
+        function deleteOrder(idx) { if(confirm('Xóa đơn này?')) { orders.splice(idx, 1); localStorage.setItem('tg_orders_v38', JSON.stringify(orders)); renderOrders(); try{runReport();}catch(e){} queueCloudSave(); } }
 
-        // HÀM MỞ POPUP XEM NHANH ĐƠN HÀNG KHÔNG CHO SỬA DỮ LIỆU
+        // POPUP XEM NHANH ĐƠN HÀNG (HÌNH CON MẮT) KHÔNG CHỈNH SỬA
         function openViewModal(idx) {
             const o = orders[idx];
             let prodHtml = o.items && o.items.length > 0 ? o.items.map(i => `<div class="mb-1">- ${i.qty}x ${i.name} <span class="text-gray-400">(${Number(i.price).toLocaleString()}đ)</span></div>`).join('') : `<div>- ${o.product || 'Sản phẩm'}</div>`;
@@ -465,7 +465,7 @@
 
             let sorted = [...orders].sort((a,b) => new Date(b.date) - new Date(a.date));
             
-            // FIX LỖI TÌM SĐT CHỨA SỐ 0: ÉP DATA TRƯỚC KHI SEARCH
+            // FIX SỐ 0 ĐẦU SĐT KHI TRA CỨU: TỰ ĐỘNG BÙ SỐ 0 ĐỂ SO SÁNH CHUẨN XÁC
             sorted = sorted.filter(o => {
                 let pPhone = String(o.phone || '');
                 if (pPhone.length >= 9 && !pPhone.startsWith('0')) pPhone = '0' + pPhone;
@@ -495,7 +495,6 @@
                 
                 let codBadge = o.isCOD ? (o.isMoneyCollected ? '<span class="text-xs font-bold text-blue-600 px-1 bg-blue-50 rounded">COD (Đã thu)</span>' : '<span class="text-xs font-bold text-orange-500 px-1 bg-orange-50 rounded">Thu COD</span>') : '<span class="text-xs font-bold text-green-500 px-1 bg-green-50 rounded">Đã CK</span>';
 
-                // ĐÃ BỔ SUNG NÚT XEM (HÌNH CON MẮT MÀU TÍM) CHO CẢ HAI GIAO DIỆN
                 let actionBtnsMobile = `
                     <button onclick="openViewModal(${idx})" class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center transition" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>
                     <button onclick="copyMessage(${idx})" class="w-10 h-10 rounded-lg bg-green-50 text-green-500 flex items-center justify-center transition"><i class="fa-solid fa-comment-dots"></i></button> 
@@ -598,7 +597,7 @@
                     if(n) { items.push({name: n, qty: q, price: pr}); totalItemsPrice += (q * pr); productNames.push(`${n} (x${q})`); prodDb[n] = pr; }
                 });
                 if(items.length === 0) { alert("Vui lòng thêm ít nhất 1 sản phẩm!"); submitBtn.disabled = false; submitBtn.innerHTML = 'Lưu Đơn'; return; }
-                localStorage.setItem('tg_prods_v371', JSON.stringify(prodDb));
+                localStorage.setItem('tg_prods_v38', JSON.stringify(prodDb));
                 const data = { 
                     salutation: f.salutation.value, customerName: f.customerName.value, phone: String(f.phone.value), address: f.address.value, note: f.note.value,
                     product: productNames.join(', '), price: totalItemsPrice, items: items, customerShipFee: Number(f.customerShipFee.value) || 0, 
@@ -606,7 +605,7 @@
                 }; 
                 if(idx === -1) { orders.unshift({ id: Date.now(), date: new Date().toISOString(), status: 'pending', trackingCode: '', ...data }); } else { orders[idx] = { ...orders[idx], ...data }; } 
                 
-                localStorage.setItem('tg_orders_v371', JSON.stringify(orders));
+                localStorage.setItem('tg_orders_v38', JSON.stringify(orders));
                 renderOrders(); 
                 try { runReport(); } catch(err) { console.warn("Lỗi tạo báo cáo", err); }
                 closeModal(); 
@@ -627,7 +626,6 @@
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500); 
         }
 
-        // CHỨC NĂNG XÓA NHANH Ô TÌM KIẾM (DẤU X)
         function toggleClearBtn() {
             const input = document.getElementById('search-input'); const btn = document.getElementById('clear-search-btn');
             if (input.value.length > 0) btn.classList.remove('hidden'); else btn.classList.add('hidden');
@@ -651,7 +649,7 @@
         }
 
         function updateProdList() { const dl = document.getElementById('prod-list'); dl.innerHTML = ''; Object.keys(prodDb).forEach(k => dl.innerHTML += `<option value="${k}">`); }
-        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v371', configRate); alert('Đã lưu cấu hình!'); }
+        function saveConfig() { configRate = document.getElementById('config-rate').value; localStorage.setItem('tg_rate_v38', configRate); alert('Đã lưu cấu hình!'); }
         
         renderOrders(); syncData();
     </script>
