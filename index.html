@@ -613,8 +613,37 @@
         }
 
         function printInvoice(idx) {
-            const o = orders[idx]; let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
-            let dXung = o.salutation ? o.salutation : 'bạn'; let prodHtml = '';
+            const o = orders[idx]; 
+            let final = o.price - (o.discType === 'percent' ? o.price*(o.discVal/100) : o.discVal) + (Number(o.customerShipFee) || 0); 
+            let dXung = o.salutation ? o.salutation : 'bạn'; 
+            let p = dXung.toLowerCase();
+
+            // Bảng thông báo chọn lời chúc
+            let menuText = `Chọn lời chúc in cuối Bill (Nhập số 1-4, hoặc TỰ VIẾT câu của bạn vào ô dưới):\n\n` +
+            `1. [Mặc định] Mỗi mẻ giấy... vẻ đẹp không hoàn hảo...\n` +
+            `2. [Bao thư] Mong chiếc bao thư thô mộc này sẽ giúp ${p} gói ghém...\n` +
+            `3. [Bộ Kit] Giữa những bộn bề, chúc ${p} có những giờ phút...\n` +
+            `4. [Khung] Có những khoảnh khắc xứng đáng được nâng niu...`;
+
+            let userChoice = prompt(menuText, "1");
+            if (userChoice === null) return; // Bấm Hủy thì không in nữa
+
+            // Xử lý nội dung dựa trên lựa chọn
+            let finalMessage = "";
+            if (userChoice === "1") {
+                finalMessage = `"Mỗi mẻ giấy, mỗi chi tiết đều mang vẻ đẹp của sự không hoàn hảo. Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${p} một chút niềm vui trong ngày."`;
+            } else if (userChoice === "2") {
+                finalMessage = `"Mong rằng chiếc bao thư thô mộc này sẽ giúp ${p} gói ghém trọn vẹn những tâm tình chân thành nhất."`;
+            } else if (userChoice === "3") {
+                finalMessage = `"Giữa những bộn bề, chúc ${p} có những giờ phút tự tay làm nên những điều xinh xẻo, để tâm trí được thảnh thơi."`;
+            } else if (userChoice === "4") {
+                finalMessage = `"Có những khoảnh khắc xứng đáng được nâng niu. Mong chiếc khung này sẽ ôm trọn những kỷ niệm đẹp nhất của ${p}."`;
+            } else {
+                // Nếu người dùng nhập chữ bất kỳ, lấy luôn chữ đó
+                finalMessage = `"${userChoice}"`;
+            }
+
+            let prodHtml = '';
             if(o.items && o.items.length > 0) { prodHtml = o.items.map(i => `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>${i.qty} x ${i.name}</span><span style="font-weight:bold;">${(i.qty * i.price).toLocaleString()}</span></div>`).join(''); } 
             else { prodHtml = `<div style="display:flex; justify-content:space-between; margin-top: 6px; font-size: 13px;"><span>1 x ${o.product || 'Sản phẩm'}</span><span style="font-weight:bold;">${(o.price || 0).toLocaleString()}</span></div>`; }
             let cShipHtml = o.customerShipFee ? `<div style="display:flex; justify-content:space-between; margin-top: 8px; font-size: 12px; color: #333;"><span>Phí ship</span><span>${Number(o.customerShipFee).toLocaleString()}</span></div>` : '';
@@ -622,7 +651,7 @@
             let discHtml = o.discVal ? `<div style="display:flex; justify-content:space-between; margin-top: 4px; font-size: 12px; color: #333;"><span>Ưu đãi xíu xiu</span><span>-${discValCalc.toLocaleString()}</span></div>` : '';
 
             const w = window.open('', '_blank'); 
-            w.document.write(`<html><head><title>Hóa Đơn Tiệm</title><style>@page { margin: 0; size: 80mm auto; } @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap'); body { font-family: 'Lora', serif; margin: 0; padding: 4mm; color: #2c2c2c; background: #fff; } .receipt { width: 72mm; padding: 2mm; box-sizing: border-box; } .logo-text { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 2px; } .sub-text { text-align: center; font-size: 11px; font-style: italic; color: #555; margin-bottom: 15px; } .divider { border-bottom: 1px dashed #aaa; margin: 12px 0; } .info { font-size: 13px; line-height: 1.6; margin-bottom: 10px; } .total-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #000; font-size: 16px; font-weight: 600; } .thank-you { text-align: center; margin-top: 25px; font-size: 12px; line-height: 1.6; font-style: italic; color: #444; }</style></head><body><div class="receipt"><div class="logo-text">tiệm giấy Thứ Ba</div><div class="sub-text">tái chế giấy cùng Tiệm nhé!</div><div class="info"><div>Thân gửi: <b>${dXung} ${o.customerName || ''}</b></div></div><div class="divider"></div><div style="font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Món đồ đã chọn</div>${prodHtml}${cShipHtml}${discHtml}<div class="total-row"><span>Tổng cộng:</span><span>${final.toLocaleString()} ₫</span></div><div class="thank-you">"Vẻ đẹp thực sự đôi khi nép mình trong những điều không trọn vẹn. Gửi đến ${dXung.toLowerCase()} từng thớ giấy mộc mạc nhất, Tiệm hy vọng món đồ nhỏ này sẽ mang lại cho ${dXung.toLowerCase()} thật nhiều cảm hứng và sự an yên."<br><br>Cảm ơn ${dXung.toLowerCase()} vì đã lựa chọn tiệm giấy Thứ Ba!<br></div></body></html>`);
+            w.document.write(`<html><head><title>Hóa Đơn Tiệm</title><style>@page { margin: 0; size: 80mm auto; } @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap'); body { font-family: 'Lora', serif; margin: 0; padding: 4mm; color: #2c2c2c; background: #fff; } .receipt { width: 72mm; padding: 2mm; box-sizing: border-box; } .logo-text { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 2px; } .sub-text { text-align: center; font-size: 11px; font-style: italic; color: #555; margin-bottom: 15px; } .divider { border-bottom: 1px dashed #aaa; margin: 12px 0; } .info { font-size: 13px; line-height: 1.6; margin-bottom: 10px; } .total-row { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #000; font-size: 16px; font-weight: 600; } .thank-you { text-align: center; margin-top: 25px; font-size: 12px; line-height: 1.6; font-style: italic; color: #444; }</style></head><body><div class="receipt"><div class="logo-text">Tiệm Giấy Thứ Ba</div><div class="sub-text">tái chế giấy cùng Tiệm nhé!</div><div class="info"><div>Thân gửi: <b>${dXung} ${o.customerName || ''}</b></div></div><div class="divider"></div><div style="font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Món đồ đã chọn</div>${prodHtml}${cShipHtml}${discHtml}<div class="total-row"><span>Tổng cộng:</span><span>${final.toLocaleString()} ₫</span></div><div class="thank-you">${finalMessage}<br><br>Cảm ơn ${p} thật nhiều!<br></div></body></html>`);
             w.document.close(); w.focus(); setTimeout(() => { w.print(); w.close(); }, 500);
         }
 
